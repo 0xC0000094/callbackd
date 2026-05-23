@@ -156,6 +156,86 @@
       .reveal .rubric-cols li {
         break-inside: avoid;
       }
+      .reveal .roadmap {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .reveal .roadmap::before {
+        content: "";
+        position: absolute;
+        top: 23px;
+        left: 16.67%;
+        right: 16.67%;
+        height: 2px;
+        background: repeating-linear-gradient(
+          to right,
+          #d4d4d8 0,
+          #d4d4d8 6px,
+          transparent 6px,
+          transparent 12px
+        );
+        z-index: 0;
+      }
+      .reveal .phase {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 0 4px;
+      }
+      .reveal .phase-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin: 0 auto 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1em;
+        background: white;
+        box-shadow: 0 0 0 6px #ffffff;
+      }
+      .reveal .phase-current .phase-circle {
+        background: #18181b;
+        color: white;
+      }
+      .reveal .phase-next .phase-circle {
+        color: #18181b;
+        border: 2px solid #18181b;
+      }
+      .reveal .phase-future .phase-circle {
+        color: #a1a1aa;
+        border: 2px dashed #d4d4d8;
+      }
+      .reveal .phase-label {
+        font-size: 0.5em;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #71717a;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .reveal .phase-title {
+        font-size: 0.7em;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #18181b;
+        line-height: 1.2;
+      }
+      .reveal .phase-future .phase-title {
+        color: #71717a;
+      }
+      .reveal .phase-desc {
+        font-size: 0.5em;
+        line-height: 1.5;
+        color: #52525b;
+      }
+      .reveal .phase-future .phase-desc {
+        color: #a1a1aa;
+      }
       .reveal a.demo-link {
         display: inline-block;
         margin-top: 20px;
@@ -377,31 +457,39 @@
         <section>
           <div class="slide-card">
             <h2>Roadmap</h2>
-            <p style="margin-bottom: 12px">
-              <strong>Phase 1</strong> (this). Legitimacy analyzer.
+            <p class="small" style="margin-top: 0">
+              Phase 1 is what you saw in the demo. Phases 2 and 3 are how
+              the product compounds.
             </p>
-            <p style="margin-bottom: 4px"><strong>Phase 2.</strong> Candidate intelligence.</p>
-            <ul style="margin-top: 0">
-              <li>
-                Upload a resume alongside the posting. Compare JD language
-                against resume language at the bullet level.
-              </li>
-              <li>
-                Identify gaps, suggest specific rewrites, generate interview
-                prep tailored to what the company is testing for.
-              </li>
-            </ul>
-            <p style="margin-bottom: 4px; margin-top: 16px"><strong>Phase 3.</strong> Community and outcome data.</p>
-            <ul style="margin-top: 0">
-              <li>
-                Verified applicant submissions. Evidence based, so bot
-                submissions cost something.
-              </li>
-              <li>
-                Outcomes attach to companies and roles. Recommendations move
-                from inference to pattern matching against real data.
-              </li>
-            </ul>
+            <div class="roadmap">
+              <div class="phase phase-current">
+                <div class="phase-circle">1</div>
+                <div class="phase-label">Phase 1 · Live</div>
+                <div class="phase-title">Legitimacy Analyzer</div>
+                <div class="phase-desc">
+                  Two modes, nine signals, traffic light scored. The
+                  hackathon submission.
+                </div>
+              </div>
+              <div class="phase phase-next">
+                <div class="phase-circle">2</div>
+                <div class="phase-label">Phase 2 · Next</div>
+                <div class="phase-title">Candidate Intelligence</div>
+                <div class="phase-desc">
+                  Resume comparison at the bullet level. Gap analysis.
+                  Targeted interview prep.
+                </div>
+              </div>
+              <div class="phase phase-future">
+                <div class="phase-circle">3</div>
+                <div class="phase-label">Phase 3 · Later</div>
+                <div class="phase-title">Community Outcomes</div>
+                <div class="phase-desc">
+                  Verified applicant submissions. Recommendations move from
+                  inference to pattern matching against real data.
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
