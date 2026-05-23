@@ -164,8 +164,17 @@ export default function App() {
         )}
       </main>
 
-      <footer className="text-center text-xs text-zinc-400 py-8">
-        Phase 1 · Legitimacy Analyzer
+      <footer className="text-center text-xs text-zinc-400 py-8 space-x-3">
+        <span>Phase 1 · Legitimacy Analyzer</span>
+        <span>·</span>
+        <a
+          href="/presentation/"
+          className="hover:text-zinc-900 underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Presentation
+        </a>
       </footer>
     </div>
   );

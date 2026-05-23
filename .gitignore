@@ -5,3 +5,7 @@ dist
 .vercel
 .DS_Store
 *.log
+
+# personal, never push
+documentation/PERSONAL.md
+
