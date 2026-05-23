@@ -25,6 +25,10 @@
         --r-main-color: #18181b;
         --r-heading-color: #18181b;
         --r-link-color: #18181b;
+        --r-background-color: #f4f4f5;
+      }
+      body {
+        background: #f4f4f5;
       }
       .reveal h1,
       .reveal h2,
@@ -33,15 +37,49 @@
         font-weight: 700;
         letter-spacing: -0.02em;
       }
-      .reveal section {
+      .reveal h2 {
+        font-size: 1.6em;
+        margin-bottom: 0.4em;
+      }
+      .reveal h3 {
+        font-size: 1.05em;
+        margin-bottom: 0.4em;
+      }
+      .reveal p {
+        font-size: 0.75em;
+        line-height: 1.55;
+      }
+      .reveal ul,
+      .reveal ol {
+        font-size: 0.75em;
+        line-height: 1.6;
+      }
+      .reveal .small {
+        font-size: 0.6em;
+        color: #71717a;
+      }
+      .reveal .slides section {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        box-sizing: border-box;
         text-align: left;
       }
-      .reveal section.center {
-        text-align: center;
+      .reveal .slides section .slide-card {
+        background: white;
+        border: 1px solid #e4e4e7;
+        border-radius: 20px;
+        padding: 44px 52px;
+        max-width: 860px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        box-sizing: border-box;
       }
-      .reveal .tagline {
-        color: #71717a;
-        font-size: 0.7em;
+      .reveal .slides section.center .slide-card {
+        text-align: center;
       }
       .reveal .pill {
         display: inline-block;
@@ -50,20 +88,34 @@
         font-size: 0.45em;
         background: #f4f4f5;
         color: #52525b;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
+      }
+      .reveal .tagline {
+        color: #71717a;
       }
       .reveal .verdict-row {
-        display: flex;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-top: 24px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        margin-top: 20px;
+      }
+      .reveal .verdict-row.two {
+        grid-template-columns: 1fr 1fr;
       }
       .reveal .verdict {
-        flex: 1;
-        min-width: 220px;
-        padding: 20px;
-        border-radius: 16px;
+        padding: 16px;
+        border-radius: 12px;
         border: 2px solid;
+        text-align: left;
+      }
+      .reveal .verdict strong {
+        font-size: 0.85em;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .reveal .verdict p {
+        font-size: 0.55em;
+        margin: 0;
       }
       .reveal .verdict.green {
         border-color: #6ee7b7;
@@ -80,13 +132,33 @@
         background: #fff1f2;
         color: #9f1239;
       }
-      .reveal ul {
-        font-size: 0.85em;
-        line-height: 1.6;
+      .reveal .mode-card {
+        padding: 18px;
+        border-radius: 12px;
+        border: 2px solid #e4e4e7;
       }
-      .reveal .small {
-        font-size: 0.6em;
-        color: #71717a;
+      .reveal .mode-card.dark {
+        border-color: #18181b;
+        background: #18181b;
+        color: white;
+      }
+      .reveal .mode-card.dark h3,
+      .reveal .mode-card.dark p {
+        color: white;
+      }
+      .reveal .mode-card p {
+        font-size: 0.55em;
+        margin: 0;
+        color: #52525b;
+      }
+      .reveal .rubric-cols {
+        columns: 2;
+        column-gap: 32px;
+        font-size: 0.75em;
+        line-height: 1.7;
+      }
+      .reveal .rubric-cols li {
+        break-inside: avoid;
       }
       .reveal a.demo-link {
         display: inline-block;
@@ -97,6 +169,7 @@
         border-radius: 8px;
         text-decoration: none;
         font-weight: 600;
+        font-size: 0.7em;
       }
       .reveal .footer-back {
         position: fixed;
@@ -105,6 +178,7 @@
         font-size: 12px;
         color: #a1a1aa;
         text-decoration: none;
+        z-index: 100;
       }
       .reveal .footer-back:hover {
         color: #18181b;
@@ -115,245 +189,250 @@
     <div class="reveal">
       <div class="slides">
         <section class="center">
-          <span class="pill">Hackathon submission</span>
-          <h1 style="font-size: 3em">Callbackd</h1>
-          <p class="tagline" style="font-size: 1.2em; margin-top: 8px">
-            Job posting legitimacy analyzer
-          </p>
-          <p style="margin-top: 48px; font-size: 0.6em; color: #71717a">
-            How do we identify high-quality, legitimate remote job
-            opportunities using AI?
-          </p>
-          <aside class="notes">
-            Open with the prompt itself. Pause. Then say: this is one answer.
-          </aside>
-        </section>
-
-        <section>
-          <h2>The problem</h2>
-          <ul>
-            <li>
-              Job seekers waste hours on postings that were never going to call
-              back.
-            </li>
-            <li>
-              Fake postings, ghost jobs, MLMs disguised as roles, and copy
-              paste filler all look reasonable at first glance.
-            </li>
-            <li>
-              The remote work boom multiplied this. More postings, more
-              countries, harder to verify.
-            </li>
-          </ul>
-          <aside class="notes">
-            Replace these with specific examples or a personal story. The
-            stronger the human angle, the better the open.
-          </aside>
-        </section>
-
-        <section>
-          <h2>The answer</h2>
-          <p>Two modes. Same rubric. Different depth of evidence.</p>
-          <div class="verdict-row">
-            <div
-              style="
-                flex: 1;
-                min-width: 240px;
-                padding: 20px;
-                border: 2px solid #e4e4e7;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="font-size: 1em; margin-bottom: 8px">
-                ⚡ Quick Check
-              </h3>
-              <p class="small" style="margin-top: 0">
-                LLM inference over the posting text. Pattern recognition,
-                language signals, red flags. A few seconds.
-              </p>
-            </div>
-            <div
-              style="
-                flex: 1;
-                min-width: 240px;
-                padding: 20px;
-                border: 2px solid #18181b;
-                border-radius: 12px;
-                background: #18181b;
-                color: white;
-              "
-            >
-              <h3
-                style="font-size: 1em; margin-bottom: 8px; color: white"
-              >
-                🔍 Deep Research
-              </h3>
-              <p
-                class="small"
-                style="margin-top: 0; color: #d4d4d8"
-              >
-                LLM plus agentic web search. Verifies the company exists,
-                checks size claims, sanity checks the role. 30 to 60 seconds.
-              </p>
-            </div>
+          <div class="slide-card">
+            <span class="pill">Hackathon submission</span>
+            <h1 style="font-size: 2.6em; margin-bottom: 0.1em">Callbackd</h1>
+            <p class="tagline" style="font-size: 1em">
+              Job posting legitimacy analyzer
+            </p>
+            <p style="margin-top: 36px; font-size: 0.65em; color: #71717a">
+              How do we identify high-quality, legitimate remote job
+              opportunities using AI?
+            </p>
+            <aside class="notes">
+              Open with the prompt itself. Pause. Then say: this is one
+              answer.
+            </aside>
           </div>
-          <aside class="notes">
-            The trick is the same rubric in both modes. Deep Research is not
-            a different product, it is the same product with receipts.
-          </aside>
         </section>
 
         <section>
-          <h2>Nine signals, traffic light scored</h2>
-          <ul style="columns: 2; column-gap: 32px; font-size: 0.75em">
-            <li>Company Legitimacy</li>
-            <li>Size Claim Accuracy</li>
-            <li>Role Coherence</li>
-            <li>Keyword Believability</li>
-            <li>Remote Claim Validity</li>
-            <li>Salary Realism</li>
-            <li>Effort Asymmetry</li>
-            <li>Compensation Red Flags</li>
-            <li>Posting Specificity</li>
-          </ul>
-          <p class="small" style="margin-top: 24px">
-            Each one gets green, yellow, or red, with a one sentence verdict
-            and the evidence behind it. An overall verdict rolls up.
-          </p>
+          <div class="slide-card">
+            <h2>The problem</h2>
+            <ul>
+              <li>
+                Job seekers waste hours on postings that were never going to
+                call back.
+              </li>
+              <li>
+                Fake postings, ghost jobs, MLMs disguised as roles, and copy
+                paste filler all look reasonable at first glance.
+              </li>
+              <li>
+                The remote work boom multiplied this. More postings, more
+                countries, harder to verify.
+              </li>
+            </ul>
+            <aside class="notes">
+              Replace these with specific examples or a personal story. The
+              stronger the human angle, the better the open.
+            </aside>
+          </div>
         </section>
 
         <section>
-          <h2>Three outcomes</h2>
-          <div class="verdict-row">
-            <div class="verdict green">
-              <strong>Likely Legitimate</strong>
-              <p class="small" style="color: inherit">
-                Findable company, coherent role, specific responsibilities,
-                realistic comp.
-              </p>
+          <div class="slide-card">
+            <h2>The answer</h2>
+            <p>Two modes. Same rubric. Different depth of evidence.</p>
+            <div class="verdict-row two">
+              <div class="mode-card">
+                <h3>⚡ Quick Check</h3>
+                <p>
+                  LLM inference over the posting text. Pattern recognition,
+                  language signals, red flags. A few seconds.
+                </p>
+              </div>
+              <div class="mode-card dark">
+                <h3>🔍 Deep Research</h3>
+                <p>
+                  LLM plus agentic web search. Verifies the company exists,
+                  checks size claims, sanity checks the role. 30 to 60
+                  seconds.
+                </p>
+              </div>
             </div>
-            <div class="verdict yellow">
-              <strong>Needs Scrutiny</strong>
-              <p class="small" style="color: inherit">
-                Mixed signals. Could be a real role with sloppy framing, or a
-                ghost posting in a good suit.
-              </p>
-            </div>
-            <div class="verdict red">
-              <strong>High Risk</strong>
-              <p class="small" style="color: inherit">
-                Scam patterns, unpaid trials, commission only, unverifiable
-                company, generic filler.
-              </p>
+            <aside class="notes">
+              The trick is the same rubric in both modes. Deep Research is
+              not a different product, it is the same product with receipts.
+            </aside>
+          </div>
+        </section>
+
+        <section>
+          <div class="slide-card">
+            <h2>Nine signals, traffic light scored</h2>
+            <ul class="rubric-cols">
+              <li>Company Legitimacy</li>
+              <li>Size Claim Accuracy</li>
+              <li>Role Coherence</li>
+              <li>Keyword Believability</li>
+              <li>Remote Claim Validity</li>
+              <li>Salary Realism</li>
+              <li>Effort Asymmetry</li>
+              <li>Compensation Red Flags</li>
+              <li>Posting Specificity</li>
+            </ul>
+            <p class="small" style="margin-top: 16px">
+              Each one gets green, yellow, or red, with a one sentence
+              verdict and the evidence behind it. An overall verdict rolls
+              up.
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <div class="slide-card">
+            <h2>Three outcomes</h2>
+            <div class="verdict-row">
+              <div class="verdict green">
+                <strong>Likely Legitimate</strong>
+                <p>
+                  Findable company, coherent role, specific responsibilities,
+                  realistic comp.
+                </p>
+              </div>
+              <div class="verdict yellow">
+                <strong>Needs Scrutiny</strong>
+                <p>
+                  Mixed signals. Could be a real role with sloppy framing, or
+                  a ghost posting in a good suit.
+                </p>
+              </div>
+              <div class="verdict red">
+                <strong>High Risk</strong>
+                <p>
+                  Scam patterns, unpaid trials, commission only,
+                  unverifiable company, generic filler.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         <section>
-          <h2>Remote, hybrid, or in person</h2>
-          <p>
-            The hackathon prompt is about remote work specifically. Every
-            report classifies the work arrangement as a peer signal to the
-            legitimacy verdict.
-          </p>
-          <ul>
-            <li>
-              Remote / Hybrid / In-person / Unclear, surfaced at the top of
-              the report.
-            </li>
-            <li>
-              A one sentence note describes any caveats found in the posting,
-              for example "Remote claimed but US timezones only, occasional
-              travel required".
-            </li>
-            <li>
-              Distinct from the rubric category that asks whether the remote
-              claim itself is trustworthy.
-            </li>
-          </ul>
+          <div class="slide-card">
+            <h2>Remote, hybrid, or in person</h2>
+            <p>
+              The hackathon prompt is about remote work specifically. Every
+              report classifies the work arrangement as a peer signal to the
+              legitimacy verdict.
+            </p>
+            <ul>
+              <li>
+                Remote, Hybrid, In-person, or Unclear, surfaced at the top
+                of the report.
+              </li>
+              <li>
+                A one sentence note describes any caveats found in the
+                posting, for example "Remote claimed but US timezones only,
+                occasional travel required".
+              </li>
+              <li>
+                Distinct from the rubric category that asks whether the
+                remote claim itself is trustworthy.
+              </li>
+            </ul>
+          </div>
         </section>
 
         <section class="center">
-          <h2>Live demo</h2>
-          <a class="demo-link" href="https://callbackd.vercel.app" target="_blank">
-            callbackd.vercel.app →
-          </a>
-          <p class="small" style="margin-top: 32px">
-            Three postings to show: a real careers page, a subtle ghost job,
-            and an obvious scam.
-          </p>
-          <aside class="notes">
-            Have all three postings already in clipboard or in browser tabs.
-            Run Quick Check first for speed, then Deep Research to show the
-            research trail.
-          </aside>
+          <div class="slide-card">
+            <h2>Live demo</h2>
+            <a
+              class="demo-link"
+              href="https://callbackd.vercel.app"
+              target="_blank"
+              >callbackd.vercel.app →</a
+            >
+            <p class="small" style="margin-top: 24px">
+              Three postings to show: a real careers page, a subtle ghost
+              job, and an obvious scam.
+            </p>
+            <aside class="notes">
+              Have all three postings already in clipboard or in browser
+              tabs. Run Quick Check first for speed, then Deep Research to
+              show the research trail.
+            </aside>
+          </div>
         </section>
 
         <section>
-          <h2>How it is built</h2>
-          <ul>
-            <li>React, Vite, Tailwind CSS on the frontend.</li>
-            <li>Vercel serverless functions for the API.</li>
-            <li>
-              Claude Sonnet 4.6 via the Anthropic SDK, with the hosted
-              <code>web_search</code> tool for Deep Research.
-            </li>
-            <li>
-              Server-Sent Events stream real progress from the model to the
-              loading UI. No fake timers.
-            </li>
-            <li>
-              Origin allowlist, Vercel bot protection, WAF rate limit, and a
-              hard spend cap on the key.
-            </li>
-          </ul>
+          <div class="slide-card">
+            <h2>How it is built</h2>
+            <ul>
+              <li>React, Vite, Tailwind CSS on the frontend.</li>
+              <li>Vercel serverless functions for the API.</li>
+              <li>
+                Claude Sonnet 4.6 via the Anthropic SDK, with the hosted
+                <code>web_search</code> tool for Deep Research.
+              </li>
+              <li>
+                Server-Sent Events stream real progress from the model to
+                the loading UI. No fake timers.
+              </li>
+              <li>
+                Origin allowlist, Vercel bot protection, WAF rate limit, and
+                a hard spend cap on the key.
+              </li>
+            </ul>
+          </div>
         </section>
 
         <section>
-          <h2>Roadmap</h2>
-          <p><strong>Phase 1</strong> (this). Legitimacy analyzer.</p>
-          <p><strong>Phase 2.</strong> Candidate intelligence.</p>
-          <ul>
-            <li>
-              Upload a resume alongside the posting. Compare JD language
-              against resume language at the bullet level.
-            </li>
-            <li>
-              Identify gaps, suggest specific rewrites, generate interview
-              prep tailored to what the company is testing for.
-            </li>
-          </ul>
-          <p><strong>Phase 3.</strong> Community and outcome data.</p>
-          <ul>
-            <li>
-              Verified applicant submissions. Evidence based, so bot
-              submissions cost something.
-            </li>
-            <li>
-              Outcomes attach to companies and roles. Recommendations move
-              from inference to pattern matching against real data.
-            </li>
-          </ul>
+          <div class="slide-card">
+            <h2>Roadmap</h2>
+            <p style="margin-bottom: 12px">
+              <strong>Phase 1</strong> (this). Legitimacy analyzer.
+            </p>
+            <p style="margin-bottom: 4px"><strong>Phase 2.</strong> Candidate intelligence.</p>
+            <ul style="margin-top: 0">
+              <li>
+                Upload a resume alongside the posting. Compare JD language
+                against resume language at the bullet level.
+              </li>
+              <li>
+                Identify gaps, suggest specific rewrites, generate interview
+                prep tailored to what the company is testing for.
+              </li>
+            </ul>
+            <p style="margin-bottom: 4px; margin-top: 16px"><strong>Phase 3.</strong> Community and outcome data.</p>
+            <ul style="margin-top: 0">
+              <li>
+                Verified applicant submissions. Evidence based, so bot
+                submissions cost something.
+              </li>
+              <li>
+                Outcomes attach to companies and roles. Recommendations move
+                from inference to pattern matching against real data.
+              </li>
+            </ul>
+          </div>
         </section>
 
         <section class="center">
-          <h2>Why this gets harder to copy over time</h2>
-          <p style="font-size: 0.8em; max-width: 720px; margin: 0 auto">
-            Every outcome submitted makes the next recommendation smarter. The
-            product is copyable. The data is not.
-          </p>
-          <p style="margin-top: 48px" class="small">
-            More candidates → better outcome data → better recommendations →
-            more candidates.
-          </p>
+          <div class="slide-card">
+            <h2>Why this gets harder to copy over time</h2>
+            <p style="max-width: 640px; margin: 0 auto">
+              Every outcome submitted makes the next recommendation smarter.
+              The product is copyable. The data is not.
+            </p>
+            <p style="margin-top: 32px" class="small">
+              More candidates → better outcome data → better recommendations
+              → more candidates.
+            </p>
+          </div>
         </section>
 
         <section class="center">
-          <h1>Thank you</h1>
-          <p class="tagline">Questions?</p>
-          <p style="margin-top: 40px; font-size: 0.5em; color: #a1a1aa">
-            callbackd.vercel.app · github.com/0xC0000094/callbackd
-          </p>
+          <div class="slide-card">
+            <h1 style="font-size: 2.4em">Thank you</h1>
+            <p class="tagline">Questions?</p>
+            <p
+              style="margin-top: 32px; font-size: 0.55em; color: #a1a1aa"
+            >
+              callbackd.vercel.app · github.com/0xC0000094/callbackd
+            </p>
+          </div>
         </section>
       </div>
     </div>
@@ -369,6 +448,11 @@
         slideNumber: "c/t",
         transition: "slide",
         center: false,
+        width: 1100,
+        height: 720,
+        margin: 0.06,
+        minScale: 0.4,
+        maxScale: 1.4,
       });
     </script>
   </body>
