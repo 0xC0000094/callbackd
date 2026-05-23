@@ -59,11 +59,6 @@
         color: #71717a;
       }
       .reveal .slides section {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        box-sizing: border-box;
         text-align: left;
       }
       .reveal .slides section .slide-card {
@@ -73,7 +68,8 @@
         padding: 44px 52px;
         max-width: 860px;
         width: 100%;
-        max-height: 100%;
+        margin: 0 auto;
+        max-height: 660px;
         overflow-y: auto;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
         box-sizing: border-box;
@@ -447,7 +443,7 @@
         progress: true,
         slideNumber: "c/t",
         transition: "slide",
-        center: false,
+        center: true,
         width: 1100,
         height: 720,
         margin: 0.06,
