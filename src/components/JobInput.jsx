@@ -1,10 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+function readHandoffFromHash() {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash || "";
+  const match = hash.match(/[#&]cbd=([^&]+)/);
+  if (!match) return null;
+  try {
+    const json = decodeURIComponent(escape(atob(match[1])));
+    const parsed = JSON.parse(json);
+    if (parsed && typeof parsed === "object") {
+      return {
+        url: typeof parsed.url === "string" ? parsed.url : "",
+        text: typeof parsed.text === "string" ? parsed.text : "",
+      };
+    }
+  } catch {
+    // ignore malformed payload
+  }
+  return null;
+}
 
 export default function JobInput({ onSubmit }) {
   const [url, setUrl] = useState("");
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [scrapeError, setScrapeError] = useState("");
+  const [handoffNotice, setHandoffNotice] = useState("");
+
+  useEffect(() => {
+    const handoff = readHandoffFromHash();
+    if (!handoff) return;
+    if (handoff.text) setText(handoff.text);
+    if (handoff.url) setUrl(handoff.url);
+    setHandoffNotice(
+      "Loaded from the Callbackd browser extension. Pick a mode to run the analysis.",
+    );
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + window.location.search,
+    );
+  }, []);
 
   const hasUrl = url.trim().length > 0;
   const hasText = text.trim().length >= 100;
@@ -110,6 +146,12 @@ export default function JobInput({ onSubmit }) {
           )}
         </p>
       </div>
+
+      {handoffNotice && (
+        <div className="text-sm text-sky-800 bg-sky-50 border border-sky-200 rounded-md p-3">
+          {handoffNotice}
+        </div>
+      )}
 
       {scrapeError && (
         <div className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-3">

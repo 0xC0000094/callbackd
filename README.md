@@ -77,6 +77,10 @@ This is Phase 1.
 
 LinkedIn, Indeed, and Glassdoor URLs are not supported because those sites block scraping. Paste the posting text instead.
 
+## Browser extension
+
+A small Chrome / Edge / Brave / Firefox extension lives in [`extension/`](extension/). It reads the current tab's URL and visible job posting text, then opens callbackd.vercel.app with the data pre-filled. Useful for job board pages (LinkedIn, Indeed, Glassdoor) where direct scraping is blocked. Install instructions are in [`extension/README.md`](extension/README.md).
+
 ## Documentation
 
 Architecture, API contracts, security, and prompt design notes are in [`documentation/DEVELOPMENT.md`](documentation/DEVELOPMENT.md).
