@@ -36,12 +36,27 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 5vw 8vw;
+    align-items: center;
+    text-align: center;
+    padding: 4vh max(2.5rem, 4vw);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.35s ease;
   }
   .slide.active { opacity: 1; pointer-events: all; }
+
+  /* Content column width caps — wider rows for layouts, narrower for text */
+  .slide > * { width: 100%; max-width: 1100px; }
+  .hero-sub, p, .big-line { max-width: 760px; margin-left: auto; margin-right: auto; }
+
+  /* Flex rows: keep the row centered as a whole */
+  .stat-row, .pill-row, .mode-row, .verdict-row, .phase-row, .tech-row {
+    justify-content: center;
+  }
+
+  /* Layouts that need internal left-alignment */
+  .demo-layout, .close-layout { text-align: left; }
+  .demo-step, .ref-block, .ref { text-align: left; }
 
   .slide-num {
     position: absolute;
