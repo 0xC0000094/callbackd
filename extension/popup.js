@@ -31,7 +31,13 @@ function pageScrape() {
     "#jobsearch-ViewjobPaneWrapper",
     "#viewJobSSRRoot",
     "#jobDescriptionText",
-    // LinkedIn
+    // LinkedIn (current jobs UI, 2025+)
+    ".jobs-search__job-details--container",
+    ".jobs-semantic-search-job-details-wrapper",
+    ".job-view-layout.jobs-details",
+    ".job-details-about-the-job-module__description",
+    ".scaffold-layout__detail",
+    // LinkedIn (older jobs UI — kept for backward compat)
     ".jobs-description-content__text",
     ".jobs-description__content",
     ".jobs-details__main-content",
