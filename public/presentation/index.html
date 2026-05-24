@@ -1,635 +1,502 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Callbackd — Presentation</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css"
-    />
-    <style>
-      :root {
-        --r-main-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-          Roboto, sans-serif;
-        --r-heading-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-          Roboto, sans-serif;
-        --r-main-color: #18181b;
-        --r-heading-color: #18181b;
-        --r-link-color: #18181b;
-        --r-background-color: #f4f4f5;
-      }
-      body {
-        background: #f4f4f5;
-      }
-      .reveal h1,
-      .reveal h2,
-      .reveal h3 {
-        text-transform: none;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-      }
-      .reveal h2 {
-        font-size: 1.6em;
-        margin-bottom: 0.4em;
-      }
-      .reveal h3 {
-        font-size: 1.05em;
-        margin-bottom: 0.4em;
-      }
-      .reveal p {
-        font-size: 0.75em;
-        line-height: 1.55;
-      }
-      .reveal ul,
-      .reveal ol {
-        font-size: 0.75em;
-        line-height: 1.6;
-      }
-      .reveal .small {
-        font-size: 0.6em;
-        color: #71717a;
-      }
-      .reveal .slides section {
-        text-align: left;
-      }
-      .reveal .slides section .slide-card {
-        background: white;
-        border: 1px solid #e4e4e7;
-        border-radius: 20px;
-        padding: 44px 52px;
-        max-width: 860px;
-        width: 100%;
-        margin: 0 auto;
-        max-height: 660px;
-        overflow-y: auto;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-        box-sizing: border-box;
-      }
-      .reveal .slides section.center .slide-card {
-        text-align: center;
-      }
-      .reveal .pill {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 999px;
-        font-size: 0.45em;
-        background: #f4f4f5;
-        color: #52525b;
-        margin-bottom: 20px;
-      }
-      .reveal .tagline {
-        color: #71717a;
-      }
-      .reveal .verdict-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 12px;
-        margin-top: 20px;
-      }
-      .reveal .verdict-row.two {
-        grid-template-columns: 1fr 1fr;
-      }
-      .reveal .verdict {
-        padding: 16px;
-        border-radius: 12px;
-        border: 2px solid;
-        text-align: left;
-      }
-      .reveal .verdict strong {
-        font-size: 0.85em;
-        display: block;
-        margin-bottom: 6px;
-      }
-      .reveal .verdict p {
-        font-size: 0.55em;
-        margin: 0;
-      }
-      .reveal .verdict.green {
-        border-color: #6ee7b7;
-        background: #ecfdf5;
-        color: #065f46;
-      }
-      .reveal .verdict.yellow {
-        border-color: #fcd34d;
-        background: #fffbeb;
-        color: #92400e;
-      }
-      .reveal .verdict.red {
-        border-color: #fda4af;
-        background: #fff1f2;
-        color: #9f1239;
-      }
-      .reveal .mode-card {
-        padding: 18px;
-        border-radius: 12px;
-        border: 2px solid #e4e4e7;
-      }
-      .reveal .mode-card.dark {
-        border-color: #18181b;
-        background: #18181b;
-        color: white;
-      }
-      .reveal .mode-card.dark h3,
-      .reveal .mode-card.dark p {
-        color: white;
-      }
-      .reveal .mode-card p {
-        font-size: 0.55em;
-        margin: 0;
-        color: #52525b;
-      }
-      .reveal .rubric-cols {
-        columns: 2;
-        column-gap: 32px;
-        font-size: 0.75em;
-        line-height: 1.7;
-      }
-      .reveal .rubric-cols li {
-        break-inside: avoid;
-      }
-      .reveal .roadmap {
-        position: relative;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 12px;
-        margin-top: 28px;
-      }
-      .reveal .roadmap::before {
-        content: "";
-        position: absolute;
-        top: 23px;
-        left: 16.67%;
-        right: 16.67%;
-        height: 2px;
-        background: repeating-linear-gradient(
-          to right,
-          #d4d4d8 0,
-          #d4d4d8 6px,
-          transparent 6px,
-          transparent 12px
-        );
-        z-index: 0;
-      }
-      .reveal .phase {
-        position: relative;
-        z-index: 1;
-        text-align: center;
-        padding: 0 4px;
-      }
-      .reveal .phase-circle {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        margin: 0 auto 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 1em;
-        background: white;
-        box-shadow: 0 0 0 6px #ffffff;
-      }
-      .reveal .phase-current .phase-circle {
-        background: #18181b;
-        color: white;
-      }
-      .reveal .phase-next .phase-circle {
-        color: #18181b;
-        border: 2px solid #18181b;
-      }
-      .reveal .phase-future .phase-circle {
-        color: #a1a1aa;
-        border: 2px dashed #d4d4d8;
-      }
-      .reveal .phase-label {
-        font-size: 0.5em;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #71717a;
-        margin-bottom: 6px;
-        font-weight: 600;
-      }
-      .reveal .phase-title {
-        font-size: 0.7em;
-        font-weight: 700;
-        margin-bottom: 8px;
-        color: #18181b;
-        line-height: 1.2;
-      }
-      .reveal .phase-future .phase-title {
-        color: #71717a;
-      }
-      .reveal .phase-desc {
-        font-size: 0.5em;
-        line-height: 1.5;
-        color: #52525b;
-      }
-      .reveal .phase-future .phase-desc {
-        color: #a1a1aa;
-      }
-      .reveal a.demo-link {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 12px 24px;
-        background: #18181b;
-        color: white !important;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.7em;
-      }
-      .reveal .footer-back {
-        position: fixed;
-        bottom: 16px;
-        left: 16px;
-        font-size: 12px;
-        color: #a1a1aa;
-        text-decoration: none;
-        z-index: 100;
-      }
-      .reveal .footer-back:hover {
-        color: #18181b;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="reveal">
-      <div class="slides">
-        <section class="center">
-          <div class="slide-card">
-            <h1 style="font-size: 2.6em; margin-bottom: 0.1em">Callbackd</h1>
-            <p class="tagline" style="font-size: 1em">
-              Job posting legitimacy analyzer
-            </p>
-            <p style="margin-top: 36px; font-size: 0.65em; color: #71717a">
-              How do we identify high-quality, legitimate remote job
-              opportunities using AI?
-            </p>
-            <aside class="notes">
-              Open with the prompt itself. Pause. Then say: this is one
-              answer.
-            </aside>
-          </div>
-        </section>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Callbackd — Pitch Presentation</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        <section>
-          <div class="slide-card">
-            <h2>The problem</h2>
-            <ul>
-              <li>
-                Job seekers waste hours on postings that were never going to
-                call back.
-              </li>
-              <li>
-                Fake postings, ghost jobs, MLMs disguised as roles, and copy
-                paste filler all look reasonable at first glance.
-              </li>
-              <li>
-                The remote work boom multiplied this. More postings, more
-                countries, harder to verify.
-              </li>
-            </ul>
-            <aside class="notes">
-              Replace these with specific examples or a personal story. The
-              stronger the human angle, the better the open.
-            </aside>
-          </div>
-        </section>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f0;
+    --muted: #888;
+    --dim: #555;
+    --teal: #1D9E75;
+    --teal-light: #5DCAA5;
+    --purple: #7F77DD;
+    --purple-light: #AFA9EC;
+    --amber: #EF9F27;
+    --red: #E24B4A;
+    --blue: #378ADD;
+    --green: #639922;
+  }
 
-        <section>
-          <div class="slide-card">
-            <h2>The answer</h2>
-            <p>Two modes. Same rubric. Different depth of evidence.</p>
-            <div class="verdict-row two">
-              <div class="mode-card">
-                <h3>⚡ Quick Check</h3>
-                <p>
-                  LLM inference over the posting text. Pattern recognition,
-                  language signals, red flags. A few seconds.
-                </p>
-              </div>
-              <div class="mode-card dark">
-                <h3>🔍 Deep Research</h3>
-                <p>
-                  LLM plus agentic web search. Verifies the company exists,
-                  checks size claims, sanity checks the role. 30 to 60
-                  seconds.
-                </p>
-              </div>
-            </div>
-            <aside class="notes">
-              The trick is the same rubric in both modes. Deep Research is
-              not a different product, it is the same product with receipts.
-            </aside>
-          </div>
-        </section>
+  html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  body { height: 100vh; overflow: hidden; }
+  .deck { width: 100vw; height: 100vh; position: relative; }
 
-        <section>
-          <div class="slide-card">
-            <h2>Nine signals, traffic light scored</h2>
-            <ul class="rubric-cols">
-              <li>Company Legitimacy</li>
-              <li>Size Claim Accuracy</li>
-              <li>Role Coherence</li>
-              <li>Keyword Believability</li>
-              <li>Remote Claim Validity</li>
-              <li>Salary Realism</li>
-              <li>Effort Asymmetry</li>
-              <li>Compensation Red Flags</li>
-              <li>Posting Specificity</li>
-            </ul>
-            <p class="small" style="margin-top: 16px">
-              Each one gets green, yellow, or red, with a one sentence
-              verdict and the evidence behind it. An overall verdict rolls
-              up.
-            </p>
-          </div>
-        </section>
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5vw 8vw;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
 
-        <section>
-          <div class="slide-card">
-            <h2>Three outcomes</h2>
-            <div class="verdict-row">
-              <div class="verdict green">
-                <strong>Likely Legitimate</strong>
-                <p>
-                  Findable company, coherent role, specific responsibilities,
-                  realistic comp.
-                </p>
-              </div>
-              <div class="verdict yellow">
-                <strong>Needs Scrutiny</strong>
-                <p>
-                  Mixed signals. Could be a real role with sloppy framing, or
-                  a ghost posting in a good suit.
-                </p>
-              </div>
-              <div class="verdict red">
-                <strong>High Risk</strong>
-                <p>
-                  Scam patterns, unpaid trials, commission only,
-                  unverifiable company, generic filler.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+  .slide-num {
+    position: absolute;
+    bottom: 2rem;
+    right: 2.5rem;
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+  }
 
-        <section>
-          <div class="slide-card">
-            <h2>Remote, hybrid, or in person</h2>
-            <p>
-              Every report classifies the work arrangement as a peer signal
-              to the legitimacy verdict.
-            </p>
-            <ul>
-              <li>
-                Remote, Hybrid, In-person, or Unclear, surfaced at the top
-                of the report.
-              </li>
-              <li>
-                A one sentence note describes any caveats found in the
-                posting, for example "Remote claimed but US timezones only,
-                occasional travel required".
-              </li>
-              <li>
-                Distinct from the rubric category that asks whether the
-                remote claim itself is trustworthy.
-              </li>
-            </ul>
-          </div>
-        </section>
+  .slide-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 1.5rem;
+  }
 
-        <section class="center">
-          <div class="slide-card">
-            <h2>Live demo</h2>
-            <div
-              id="qr-demo"
-              style="
-                margin: 16px auto 8px;
-                display: inline-block;
-                border: 1px solid #e4e4e7;
-                border-radius: 12px;
-                padding: 12px;
-                background: white;
-                line-height: 0;
-                font-size: 0;
-              "
-            ></div>
-            <a
-              href="https://callbackd.vercel.app/"
-              target="_blank"
-              style="
-                font-size: 0.65em;
-                color: #18181b;
-                text-decoration: none;
-                font-weight: 600;
-              "
-              >callbackd.vercel.app →</a
-            >
-            <p class="small" style="margin-top: 16px">
-              Three postings to show: a real careers page, a subtle ghost
-              job, and an obvious scam.
-            </p>
-            <aside class="notes">
-              Have all three postings already in clipboard or in browser
-              tabs. Run Quick Check first for speed, then Deep Research to
-              show the research trail.
-            </aside>
-          </div>
-        </section>
+  .hero { font-size: clamp(52px, 10vw, 96px); font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+  .hero-sub { font-size: clamp(13px, 1.6vw, 17px); color: var(--muted); margin-top: 1rem; max-width: 560px; line-height: 1.65; }
+  .hero-cite { font-size: 11px; color: var(--dim); margin-top: 0.6rem; }
 
-        <section>
-          <div class="slide-card">
-            <h2>How it is built</h2>
-            <ul>
-              <li>React, Vite, Tailwind CSS on the frontend.</li>
-              <li>Vercel serverless functions for the API.</li>
-              <li>
-                Claude Sonnet 4.6 via the Anthropic SDK, with the hosted
-                <code>web_search</code> tool for Deep Research.
-              </li>
-              <li>
-                Server-Sent Events stream real progress from the model to
-                the loading UI. No fake timers.
-              </li>
-              <li>
-                Origin allowlist, Vercel bot protection, WAF rate limit, and
-                a hard spend cap on the key.
-              </li>
-            </ul>
-          </div>
-        </section>
+  h1 { font-size: clamp(30px, 5.5vw, 58px); font-weight: 500; line-height: 1.15; letter-spacing: -0.02em; }
+  p { font-size: clamp(13px, 1.5vw, 15px); line-height: 1.7; color: var(--muted); max-width: 600px; }
 
-        <section>
-          <div class="slide-card">
-            <h2>Roadmap</h2>
-            <p class="small" style="margin-top: 0">
-              Phase 1 is what you saw in the demo. Phases 2 and 3 are how
-              the product compounds.
-            </p>
-            <div class="roadmap">
-              <div class="phase phase-current">
-                <div class="phase-circle">1</div>
-                <div class="phase-label">Phase 1 · Live</div>
-                <div class="phase-title">Legitimacy Analyzer</div>
-                <div class="phase-desc">
-                  Two modes, nine signals, traffic light scored.
-                </div>
-              </div>
-              <div class="phase phase-next">
-                <div class="phase-circle">2</div>
-                <div class="phase-label">Phase 2 · Next</div>
-                <div class="phase-title">Candidate Intelligence</div>
-                <div class="phase-desc">
-                  Resume comparison at the bullet level. Gap analysis.
-                  Targeted interview prep.
-                </div>
-              </div>
-              <div class="phase phase-future">
-                <div class="phase-circle">3</div>
-                <div class="phase-label">Phase 3 · Later</div>
-                <div class="phase-title">Community Outcomes</div>
-                <div class="phase-desc">
-                  Verified applicant submissions. Recommendations move from
-                  inference to pattern matching against real data.
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+  .accent-teal { color: var(--teal-light); }
+  .accent-purple { color: var(--purple-light); }
+  .accent-amber { color: var(--amber); }
+  .accent-red { color: var(--red); }
+  .accent-blue { color: var(--blue); }
 
-        <section class="center">
-          <div class="slide-card">
-            <h2>
-              More candidates → better outcome data → better recommendations
-              → more candidates.
-            </h2>
-            <p style="max-width: 640px; margin: 24px auto 0">
-              Every outcome submitted makes the next recommendation smarter.
-            </p>
-          </div>
-        </section>
+  .divider { width: 40px; height: 1px; background: var(--border); margin: 1.75rem 0; }
 
-        <section class="center">
-          <div class="slide-card">
-            <h1 style="font-size: 2.4em">Thank you</h1>
-            <p class="tagline">Questions?</p>
-            <div
-              style="
-                margin-top: 36px;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                align-items: center;
-                font-size: 0.6em;
-              "
-            >
-              <a
-                href="https://callbackd.vercel.app/"
-                target="_blank"
-                style="color: #18181b; text-decoration: none"
-              >
-                <strong>Live demo</strong>
-                <span style="color: #71717a">callbackd.vercel.app</span>
-              </a>
-              <a
-                href="https://github.com/0xC0000094/callbackd"
-                target="_blank"
-                style="color: #18181b; text-decoration: none"
-              >
-                <strong>Source</strong>
-                <span style="color: #71717a">github.com/0xC0000094/callbackd</span>
-              </a>
-              <a
-                href="https://www.linkedin.com/in/james--ventura/"
-                target="_blank"
-                style="color: #18181b; text-decoration: none"
-              >
-                <strong>James Ventura</strong>
-                <span style="color: #71717a">linkedin.com/in/james--ventura</span>
-              </a>
-            </div>
-            <div
-              style="
-                margin-top: 24px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 6px;
-              "
-            >
-              <div
-                id="qr-linkedin"
-                style="
-                  display: inline-block;
-                  border: 1px solid #e4e4e7;
-                  border-radius: 8px;
-                  padding: 8px;
-                  background: white;
-                  line-height: 0;
-                  font-size: 0;
-                "
-              ></div>
-              <span style="font-size: 0.45em; color: #a1a1aa; letter-spacing: 0.05em; text-transform: uppercase;">
-                Scan to connect on LinkedIn
-              </span>
-            </div>
-          </div>
-        </section>
+  .stat-row { display: flex; gap: 2.5rem; margin-top: 2rem; flex-wrap: wrap; }
+  .stat-num { font-size: clamp(28px, 5vw, 52px); font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 5px; max-width: 160px; line-height: 1.5; }
+  .stat-cite { font-size: 10px; color: var(--dim); margin-top: 3px; }
+
+  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.75rem; }
+  .pill { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border); color: var(--muted); background: var(--bg2); }
+
+  .mode-row { display: flex; gap: 1rem; margin-top: 1.75rem; }
+  .mode-box { flex: 1; border-radius: 10px; padding: 1.25rem 1.5rem; border: 0.5px solid var(--border); }
+  .mode-box.quick { border-color: rgba(55,138,221,0.3); background: rgba(55,138,221,0.06); }
+  .mode-box.deep { border-color: rgba(127,119,221,0.3); background: rgba(127,119,221,0.06); }
+  .mode-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .mode-box.quick .mode-title { color: var(--blue); }
+  .mode-box.deep .mode-title { color: var(--purple-light); }
+  .mode-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .verdict-row { display: flex; gap: 1rem; margin-top: 1.75rem; }
+  .verdict-box { flex: 1; border-radius: 10px; padding: 1.25rem; border: 0.5px solid var(--border); }
+  .verdict-box.green { border-color: rgba(29,158,117,0.3); background: rgba(29,158,117,0.06); }
+  .verdict-box.amber { border-color: rgba(239,159,39,0.3); background: rgba(239,159,39,0.06); }
+  .verdict-box.red { border-color: rgba(226,75,74,0.3); background: rgba(226,75,74,0.06); }
+  .verdict-dot { width: 10px; height: 10px; border-radius: 50%; margin-bottom: 10px; }
+  .verdict-box.green .verdict-dot { background: var(--teal-light); }
+  .verdict-box.amber .verdict-dot { background: var(--amber); }
+  .verdict-box.red .verdict-dot { background: var(--red); }
+  .verdict-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .verdict-box.green .verdict-title { color: var(--teal-light); }
+  .verdict-box.amber .verdict-title { color: var(--amber); }
+  .verdict-box.red .verdict-title { color: var(--red); }
+  .verdict-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .phase-row { display: flex; gap: 1rem; margin-top: 1.75rem; flex-wrap: wrap; }
+  .phase { flex: 1; min-width: 120px; }
+  .phase-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; margin-bottom: 10px; }
+  .p1 { background: rgba(29,158,117,0.15); color: var(--teal-light); }
+  .p2 { background: rgba(127,119,221,0.15); color: var(--purple-light); }
+  .p3 { background: rgba(239,159,39,0.15); color: var(--amber); }
+  .p4 { background: rgba(55,138,221,0.15); color: var(--blue); }
+  .phase-label { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .big-line { font-size: clamp(20px, 3.5vw, 38px); font-weight: 500; line-height: 1.3; border-left: 2px solid var(--teal); padding-left: 1.5rem; margin: 1.5rem 0; max-width: 640px; }
+
+  .tech-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.5rem; }
+  .tech-pill { font-size: 11px; padding: 5px 12px; border-radius: 6px; border: 0.5px solid var(--border); color: var(--dim); background: var(--bg2); }
+
+  .demo-layout { display: flex; gap: 3rem; align-items: flex-start; margin-top: 1.75rem; }
+  .demo-left { flex: 1; }
+  .demo-right { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
+  .qr-block { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .qr-wrap { background: #fff; padding: 10px; border-radius: 8px; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
+  .qr-label { font-size: 11px; color: var(--dim); text-align: center; }
+
+  .demo-step { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .demo-step:last-child { border-bottom: none; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--bg3); border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dim); flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .step-text strong { color: var(--text); font-weight: 500; }
+
+  .ref-block { margin-top: 1.5rem; }
+  .ref { font-size: 10px; color: var(--dim); line-height: 1.7; padding: 3px 0; border-bottom: 0.5px solid rgba(255,255,255,0.04); }
+  .ref:last-child { border-bottom: none; }
+
+  .close-layout { display: flex; gap: 4rem; align-items: center; }
+  .close-left { flex: 1; }
+  .close-right { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
+
+  .logo-name { font-size: clamp(52px, 12vw, 110px); font-weight: 500; letter-spacing: -0.03em; line-height: 1; }
+  .logo-tag { font-size: clamp(14px, 1.8vw, 18px); color: var(--muted); margin-top: 0.75rem; }
+  .cover-url { font-size: 13px; color: var(--dim); margin-top: 2rem; letter-spacing: 0.04em; }
+
+  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--teal); transition: width 0.3s ease; z-index: 200; }
+
+  .nav { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; align-items: center; z-index: 100; }
+  .nav button { background: var(--bg2); border: 0.5px solid var(--border); color: var(--muted); padding: 8px 20px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: background 0.15s; }
+  .nav button:hover { background: var(--bg3); color: var(--text); }
+  .nav button:disabled { opacity: 0.25; cursor: default; }
+
+  @media (max-width: 640px) {
+    .mode-row, .verdict-row, .phase-row, .stat-row, .demo-layout, .close-layout { flex-direction: column; gap: 1rem; }
+    .demo-right { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+    .slide { padding: 2rem 1.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck">
+
+  <!-- 01 Cover -->
+  <div class="slide active">
+    <div class="logo-name">Callbackd</div>
+    <div class="logo-tag">The feedback loop the job market has never had</div>
+    <div class="divider"></div>
+    <p style="font-size:13px;font-style:italic;color:var(--dim);max-width:520px">How do we identify high-quality, legitimate remote job opportunities using AI?</p>
+    <div class="slide-num">01 / 12</div>
+  </div>
+
+  <!-- 02 Market -->
+  <div class="slide">
+    <div class="slide-label">The market</div>
+    <div class="hero accent-teal">495,125</div>
+    <div class="hero-sub">Canadian job vacancies, Q4 2025. Down 23% in two years. The pool is shrinking while competition rises.</div>
+    <div class="hero-cite">Statistics Canada, Table 14-10-0398-01, released March 2026</div>
+    <div class="stat-row">
+      <div>
+        <div class="stat-num">52 days</div>
+        <div class="stat-label">Average time to fill a position, up from 39 in 2023</div>
+      </div>
+      <div>
+        <div class="stat-num">11%</div>
+        <div class="stat-label">Of Canadian postings are fully remote as of Q4 2025</div>
+        <div class="stat-cite">Robert Half, 285,000 Canadian postings analyzed</div>
+      </div>
+      <div>
+        <div class="stat-num">-21%</div>
+        <div class="stat-label">Edmonton job vacancies since Q1 2024</div>
+        <div class="stat-cite">Statistics Canada, 14-10-0398-01</div>
       </div>
     </div>
+    <div class="slide-num">02 / 12</div>
+  </div>
 
-    <a href="/" class="footer-back">← Back to app</a>
+  <!-- 03 Ghost jobs scale -->
+  <div class="slide">
+    <div class="slide-label">The problem</div>
+    <div class="hero accent-red">56%</div>
+    <div class="hero-sub">Of Canadian job seekers believe they have applied to a job that never intended to hire anyone.</div>
+    <div class="hero-cite">Employment Hero, nationally representative survey, 1,000+ Canadians, January 2026</div>
+    <div class="stat-row">
+      <div>
+        <div class="stat-num">21%</div>
+        <div class="stat-label">Of job ads estimated to be ghost jobs</div>
+        <div class="stat-cite">Ng, Baruch College CUNY, 2024</div>
+      </div>
+      <div>
+        <div class="stat-num">55%</div>
+        <div class="stat-label">Of classified postings show problematic hiring intent</div>
+        <div class="stat-cite">Santhosh & Jennifer, 2025</div>
+      </div>
+      <div>
+        <div class="stat-num">81%</div>
+        <div class="stat-label">Of recruiters admit to posting ghost jobs</div>
+        <div class="stat-cite">MyPerfectResume, 2024</div>
+      </div>
+    </div>
+    <div class="slide-num">03 / 12</div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-    <script>
-      function paintQR(id, url, size) {
-        const el = document.getElementById(id);
-        if (!el || typeof QRCode === "undefined") return;
-        el.innerHTML = "";
-        new QRCode(el, {
-          text: url,
-          width: size,
-          height: size,
-          colorDark: "#18181b",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.M,
-        });
-      }
-      document.addEventListener("DOMContentLoaded", () => {
-        paintQR("qr-demo", "https://callbackd.vercel.app/", 220);
-        paintQR(
-          "qr-linkedin",
-          "https://www.linkedin.com/in/james--ventura/",
-          140,
-        );
+  <!-- 04 Ground truth -->
+  <div class="slide">
+    <div class="slide-label">Ground truth</div>
+    <div class="hero">9 in 10</div>
+    <div class="hero-sub">Applications receive no response. Even with a strong resume, submitted to a real posting from a real company.</div>
+    <div class="hero-cite">Farber, Silverman & von Wachter — Princeton, ASU, UCLA. 12,224 real applications. RSF Journal, 2017.</div>
+    <div class="divider"></div>
+    <p>70% of Canadian job seekers say being ghosted impacts their mental health. 73% of 18-34 year olds report significant impact.</p>
+    <p style="margin-top:0.5rem;font-size:11px;color:var(--dim)">Employment Hero, 2026</p>
+    <div class="slide-num">04 / 12</div>
+  </div>
+
+  <!-- 05 Reframe -->
+  <div class="slide">
+    <div class="slide-label">The reframe</div>
+    <h1>Everyone is trying to filter bad jobs.</h1>
+    <div class="divider"></div>
+    <h1 style="color:var(--muted)">That is the wrong problem.</h1>
+    <p style="margin-top:2rem">Verification theater. A company can have a LinkedIn, a domain, a Glassdoor page, and a detailed job description. None of that tells you if they are hiring right now. The only signal that cannot be faked at scale is people who actually got hired.</p>
+    <div class="slide-num">05 / 12</div>
+  </div>
+
+  <!-- 06 Product -->
+  <div class="slide">
+    <div class="slide-label">What I built</div>
+    <h1>A legitimacy analyzer for remote job postings</h1>
+    <div class="mode-row">
+      <div class="mode-box quick">
+        <div class="mode-title">Quick check</div>
+        <div class="mode-desc">LLM inference over the posting text. Pattern recognition, red flag language, market realism. Results in seconds.</div>
+      </div>
+      <div class="mode-box deep">
+        <div class="mode-title">Deep research</div>
+        <div class="mode-desc">Agentic. Searches the web, verifies the company, cross-references size claims. Same rubric with real external evidence behind each score. 30-60 seconds.</div>
+      </div>
+    </div>
+    <p style="margin-top:1.25rem;font-size:12px">The trick is the same rubric in both modes. Deep Research is not a different product. It is the same product with receipts.</p>
+    <div class="slide-num">06 / 12</div>
+  </div>
+
+  <!-- 07 Rubric -->
+  <div class="slide">
+    <div class="slide-label">Nine signals. Traffic light scored. One plain-language verdict.</div>
+    <div class="pill-row">
+      <div class="pill">Company legitimacy</div>
+      <div class="pill">Size claim accuracy</div>
+      <div class="pill">Role coherence</div>
+      <div class="pill">Remote claim validity</div>
+      <div class="pill">Keyword believability</div>
+      <div class="pill">Salary realism</div>
+      <div class="pill">Effort asymmetry</div>
+      <div class="pill">Compensation red flags</div>
+      <div class="pill">Posting specificity</div>
+    </div>
+    <div class="verdict-row" style="margin-top:1.75rem">
+      <div class="verdict-box green">
+        <div class="verdict-dot"></div>
+        <div class="verdict-title">Likely Legitimate</div>
+        <div class="verdict-desc">Findable company, coherent role, specific responsibilities, realistic comp.</div>
+      </div>
+      <div class="verdict-box amber">
+        <div class="verdict-dot"></div>
+        <div class="verdict-title">Needs Scrutiny</div>
+        <div class="verdict-desc">Mixed signals. Could be a real role with sloppy framing, or a ghost posting in a good suit.</div>
+      </div>
+      <div class="verdict-box red">
+        <div class="verdict-dot"></div>
+        <div class="verdict-title">High Risk</div>
+        <div class="verdict-desc">Scam patterns, unpaid trials, commission only, unverifiable company, generic filler.</div>
+      </div>
+    </div>
+    <div class="slide-num">07 / 12</div>
+  </div>
+
+  <!-- 08 Work arrangement -->
+  <div class="slide">
+    <div class="slide-label">Remote claim validity</div>
+    <h1>Not all remote jobs are remote.</h1>
+    <div class="divider"></div>
+    <p>Every report classifies the work arrangement as a peer signal to the legitimacy verdict. Remote, Hybrid, In-person, or Unclear — surfaced at the top with a one-sentence note on any caveats found in the posting.</p>
+    <p style="margin-top:1rem">For example: "Remote claimed but US timezones only, occasional travel required."</p>
+    <p style="margin-top:1rem">This is distinct from the rubric category that asks whether the remote claim itself is trustworthy. Both run independently.</p>
+    <div class="stat-row" style="margin-top:1.75rem">
+      <div>
+        <div class="stat-num accent-teal">11%</div>
+        <div class="stat-label">Of Canadian postings are fully remote</div>
+        <div class="stat-cite">Robert Half, Q4 2025</div>
+      </div>
+      <div>
+        <div class="stat-num">28%</div>
+        <div class="stat-label">Are hybrid</div>
+      </div>
+      <div>
+        <div class="stat-num">61%</div>
+        <div class="stat-label">Are on-site despite remote work norms</div>
+      </div>
+    </div>
+    <div class="slide-num">08 / 12</div>
+  </div>
+
+  <!-- 09 Demo -->
+  <div class="slide">
+    <div class="slide-label">Live demo</div>
+    <div class="demo-layout">
+      <div class="demo-left">
+        <h1 style="font-size:clamp(22px,4vw,38px)">Three postings. Run them live.</h1>
+        <div style="margin-top:1.5rem">
+          <div class="demo-step">
+            <div class="step-num">1</div>
+            <div class="step-text"><strong>Real careers page URL</strong> — Quick Check first, then Deep Research. Show the difference in evidence depth.</div>
+          </div>
+          <div class="demo-step">
+            <div class="step-num">2</div>
+            <div class="step-text"><strong>Subtle ghost job</strong> — legitimate-looking posting, real company, no intent to hire. Watch it surface in the rubric.</div>
+          </div>
+          <div class="demo-step">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>Obvious scam</strong> — shows the floor. Contrast makes the middle case more interesting.</div>
+          </div>
+        </div>
+        <div class="tech-row" style="margin-top:1.5rem">
+          <div class="tech-pill">Claude Sonnet 4.6</div>
+          <div class="tech-pill">Anthropic web_search</div>
+          <div class="tech-pill">React + Vite</div>
+          <div class="tech-pill">Vercel serverless</div>
+          <div class="tech-pill">Server-Sent Events</div>
+          <div class="tech-pill">No fake timers</div>
+        </div>
+      </div>
+      <div class="demo-right">
+        <div class="qr-block">
+          <div class="qr-wrap" id="qr-demo"></div>
+          <div class="qr-label">callbackd.vercel.app</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">09 / 12</div>
+  </div>
+
+  <!-- 10 Roadmap -->
+  <div class="slide">
+    <div class="slide-label">Where this goes</div>
+    <div class="phase-row">
+      <div class="phase">
+        <div class="phase-dot p1">1</div>
+        <div class="phase-label">Legitimacy analyzer — live today</div>
+      </div>
+      <div class="phase">
+        <div class="phase-dot p2">2</div>
+        <div class="phase-label">Resume intelligence against JD language at the bullet level</div>
+      </div>
+      <div class="phase">
+        <div class="phase-dot p3">3</div>
+        <div class="phase-label">Community — verified applicant outcome submissions</div>
+      </div>
+      <div class="phase">
+        <div class="phase-dot p4">4</div>
+        <div class="phase-label">Data flywheel — scoring grounded in real results not inference</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p>Ontario legislation effective January 1 2026 requires employers to disclose vacancy status and whether AI is used in screening. The community layer is what makes that verifiable in practice, not just on paper.</p>
+    <p style="margin-top:0.75rem">You can copy the product. You cannot copy the data.</p>
+    <div class="slide-num">10 / 12</div>
+  </div>
+
+  <!-- 11 Flywheel -->
+  <div class="slide">
+    <div class="slide-label">The compounding effect</div>
+    <div class="big-line accent-teal">More candidates → better outcome data → better recommendations → more candidates.</div>
+    <p style="margin-top:1rem">Every outcome submitted makes the next recommendation smarter. The legitimacy analyzer works on day one with no data. The community layer is what makes it irreplaceable over time.</p>
+    <div class="divider"></div>
+    <p>Phase 1 answers the hackathon question. Phases 2, 3, and 4 answer the real question underneath it.</p>
+    <div class="slide-num">11 / 12</div>
+  </div>
+
+  <!-- 12 Close -->
+  <div class="slide">
+    <div class="slide-label">Thank you</div>
+    <div class="close-layout">
+      <div class="close-left">
+        <div class="big-line accent-purple" style="border-color:var(--purple)">The feedback loop the job market has never had.</div>
+        <div class="divider"></div>
+        <p style="font-size:13px;color:var(--dim)">callbackd.vercel.app &nbsp;·&nbsp; github.com/0xC0000094/callbackd</p>
+        <div class="ref-block">
+          <div class="ref">Farber, Silverman & von Wachter (2017). Factors Determining Callbacks. RSF Journal, 3(3), 168-201.</div>
+          <div class="ref">Ng, H. (2024). Why is it so hard to find a job now? Enter Ghost Jobs. Baruch College CUNY. arXiv:2410.21771</div>
+          <div class="ref">Santhosh & Jennifer (2025). Ghost Jobs in the Digital Labor Market. GetPromptlyHired.</div>
+          <div class="ref">Statistics Canada. Table 14-10-0398-01. Job vacancies quarterly. Released March 2026.</div>
+          <div class="ref">Employment Hero (2026). Ghost jobs survey, n=1,000+ Canadians.</div>
+          <div class="ref">Ontario Ministry of Labour (2025). Working for Workers Four Act, Bill 149.</div>
+          <div class="ref">MyPerfectResume (2024). Ghost Jobs Survey, n=753 recruiters.</div>
+          <div class="ref">Robert Half / TalentNeuron (2026). Canadian Remote Work Statistics.</div>
+        </div>
+      </div>
+      <div class="close-right">
+        <div class="qr-block">
+          <div class="qr-wrap" id="qr-linkedin"></div>
+          <div class="qr-label">Connect on LinkedIn<br>James Ventura</div>
+        </div>
+        <div class="qr-block">
+          <div class="qr-wrap" id="qr-demo2"></div>
+          <div class="qr-label">Live demo<br>callbackd.vercel.app</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-num">12 / 12</div>
+  </div>
+
+</div>
+
+<nav class="nav">
+  <button id="prev" disabled>← prev</button>
+  <button id="next">next →</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const progress = document.getElementById('progress');
+  let current = 0;
+  const total = slides.length;
+
+  function go(n) {
+    slides[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    prev.disabled = current === 0;
+    next.disabled = current === total - 1;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  prev.addEventListener('click', () => { if (current > 0) go(current - 1); });
+  next.addEventListener('click', () => { if (current < total - 1) go(current + 1); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      if (current < total - 1) go(current + 1);
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (current > 0) go(current - 1);
+    }
+  });
+
+  progress.style.width = (1 / total * 100) + '%';
+
+  window.addEventListener('load', () => {
+    if (typeof QRCode !== 'undefined') {
+      new QRCode(document.getElementById('qr-demo'), {
+        text: 'https://callbackd.vercel.app',
+        width: 80, height: 80,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
       });
-    </script>
-    <script>
-      Reveal.initialize({
-        hash: true,
-        controls: true,
-        progress: true,
-        slideNumber: "c/t",
-        transition: "slide",
-        center: true,
-        width: 1100,
-        height: 720,
-        margin: 0.06,
-        minScale: 0.4,
-        maxScale: 1.4,
+      new QRCode(document.getElementById('qr-demo2'), {
+        text: 'https://callbackd.vercel.app',
+        width: 80, height: 80,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
       });
-    </script>
-  </body>
+      new QRCode(document.getElementById('qr-linkedin'), {
+        text: 'https://www.linkedin.com/in/james--ventura',
+        width: 80, height: 80,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+  });
+</script>
+</body>
 </html>

@@ -5,6 +5,7 @@ dist
 .vercel
 .DS_Store
 *.log
+*.bak
 
 # personal, never push
 documentation/PERSONAL.md
