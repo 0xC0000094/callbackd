@@ -143,6 +143,34 @@
   .qr-wrap { background: #fff; padding: 10px; border-radius: 8px; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
   .qr-label { font-size: 11px; color: var(--dim); text-align: center; }
 
+  /* Slide 9: hero QR */
+  .qr-hero-wrap {
+    background: #fff;
+    padding: clamp(16px, 2vw, 28px);
+    border-radius: clamp(12px, 1.5vw, 22px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    line-height: 0;
+    font-size: 0;
+  }
+  .qr-hero-caption {
+    font-size: clamp(15px, 1.4vw, 22px);
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+  .demo-steps-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.75rem;
+    font-size: clamp(13px, 1vw, 16px);
+    color: var(--muted);
+  }
+  .demo-steps-row strong { color: var(--text); font-weight: 500; }
+
   .demo-step { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
   .demo-step:last-child { border-bottom: none; }
   .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--bg3); border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dim); flex-shrink: 0; margin-top: 1px; }
@@ -344,38 +372,12 @@
   <!-- 09 Demo -->
   <div class="slide">
     <div class="slide-label">Live demo</div>
-    <div class="demo-layout">
-      <div class="demo-left">
-        <h1 style="font-size:clamp(22px,4vw,38px)">Three postings. Run them live.</h1>
-        <div style="margin-top:1.5rem">
-          <div class="demo-step">
-            <div class="step-num">1</div>
-            <div class="step-text"><strong>Real careers page URL</strong> — Quick Check first, then Deep Research. Show the difference in evidence depth.</div>
-          </div>
-          <div class="demo-step">
-            <div class="step-num">2</div>
-            <div class="step-text"><strong>Subtle ghost job</strong> — legitimate-looking posting, real company, no intent to hire. Watch it surface in the rubric.</div>
-          </div>
-          <div class="demo-step">
-            <div class="step-num">3</div>
-            <div class="step-text"><strong>Obvious scam</strong> — shows the floor. Contrast makes the middle case more interesting.</div>
-          </div>
-        </div>
-        <div class="tech-row" style="margin-top:1.5rem">
-          <div class="tech-pill">Claude Sonnet 4.6</div>
-          <div class="tech-pill">Anthropic web_search</div>
-          <div class="tech-pill">React + Vite</div>
-          <div class="tech-pill">Vercel serverless</div>
-          <div class="tech-pill">Server-Sent Events</div>
-          <div class="tech-pill">No fake timers</div>
-        </div>
-      </div>
-      <div class="demo-right">
-        <div class="qr-block">
-          <div class="qr-wrap" id="qr-demo"></div>
-          <div class="qr-label">callbackd.vercel.app</div>
-        </div>
-      </div>
+    <div class="qr-hero-wrap" id="qr-demo"></div>
+    <div class="qr-hero-caption">callbackd.vercel.app</div>
+    <div class="demo-steps-row">
+      <div><strong>1. Real careers page</strong> &nbsp;Quick → Deep</div>
+      <div><strong>2. Subtle ghost job</strong> &nbsp;rubric surfaces it</div>
+      <div><strong>3. Obvious scam</strong> &nbsp;the floor</div>
     </div>
     <div class="slide-num">09 / 12</div>
   </div>
@@ -490,27 +492,52 @@
 
   progress.style.width = (1 / total * 100) + '%';
 
-  window.addEventListener('load', () => {
-    if (typeof QRCode !== 'undefined') {
-      new QRCode(document.getElementById('qr-demo'), {
+  function bigQRSize() {
+    // Slide 9 hero QR: ~60% of the shorter viewport dimension.
+    return Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.6);
+  }
+
+  function renderQRs() {
+    if (typeof QRCode === 'undefined') return;
+    const heroSize = bigQRSize();
+    const heroEl = document.getElementById('qr-demo');
+    const closeDemoEl = document.getElementById('qr-demo2');
+    const linkedInEl = document.getElementById('qr-linkedin');
+    if (heroEl) {
+      heroEl.innerHTML = '';
+      new QRCode(heroEl, {
+        text: 'https://callbackd.vercel.app',
+        width: heroSize, height: heroSize,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+    if (closeDemoEl) {
+      closeDemoEl.innerHTML = '';
+      new QRCode(closeDemoEl, {
         text: 'https://callbackd.vercel.app',
         width: 80, height: 80,
         colorDark: '#000000', colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
-      new QRCode(document.getElementById('qr-demo2'), {
-        text: 'https://callbackd.vercel.app',
-        width: 80, height: 80,
-        colorDark: '#000000', colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-      });
-      new QRCode(document.getElementById('qr-linkedin'), {
+    }
+    if (linkedInEl) {
+      linkedInEl.innerHTML = '';
+      new QRCode(linkedInEl, {
         text: 'https://www.linkedin.com/in/james--ventura',
         width: 80, height: 80,
         colorDark: '#000000', colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
     }
+  }
+
+  window.addEventListener('load', renderQRs);
+  // Re-render the hero QR on resize so it stays ~60% of viewport.
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(renderQRs, 200);
   });
 </script>
 </body>
