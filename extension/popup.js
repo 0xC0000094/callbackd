@@ -19,15 +19,37 @@ function setStatus(msg, isError) {
 
 function pageScrape() {
   // This function runs INSIDE the inspected page.
-  const SELECTORS = [
+  //
+  // Strategy: try site-specific selectors first, ordered most-specific to
+  // most-general. The first match that yields enough text wins — we do NOT
+  // pick the longest match across all selectors, because pages like
+  // Indeed search results have a giant body (all results) AND a right
+  // pane with one job in it, and we want the right pane.
+  const PRIORITY_SELECTORS = [
+    // Indeed
+    ".jobsearch-RightPane",
+    "#jobsearch-ViewjobPaneWrapper",
+    "#viewJobSSRRoot",
+    "#jobDescriptionText",
+    // LinkedIn
+    ".jobs-description-content__text",
+    ".jobs-description__content",
+    ".jobs-details__main-content",
+    ".show-more-less-html__markup",
+    '[class*="jobs-description" i]',
+    // Generic site conventions
     '[class*="job-description" i]',
     '[class*="jobdescription" i]',
     '[id*="job-description" i]',
     '[id*="jobDescription" i]',
+    '[class*="job-posting" i]',
+    '[class*="jobPosting" i]',
     '[class*="JobDetails" i]',
     '[class*="job-details" i]',
-    '[class*="jobPosting" i]',
-    '[class*="posting" i]',
+  ];
+
+  // Used only if no priority selector returns enough text.
+  const FALLBACK_SELECTORS = [
     '[class*="description" i]',
     '[role="main"]',
     "main",
@@ -54,17 +76,38 @@ function pageScrape() {
 
   let best = "";
   let bestSelector = "";
-  for (const sel of SELECTORS) {
+
+  // Priority pass: first selector that returns enough text wins.
+  for (const sel of PRIORITY_SELECTORS) {
     const el = document.querySelector(sel);
     if (!el) continue;
     const t = extractText(el);
+    if (t.length >= 400) {
+      best = t;
+      bestSelector = sel;
+      break;
+    }
     if (t.length > best.length) {
       best = t;
       bestSelector = sel;
     }
-    if (best.length > 2000) break;
   }
-  if (best.length < 500) {
+
+  // Fallback pass: only if we still have nothing substantial.
+  if (best.length < 400) {
+    for (const sel of FALLBACK_SELECTORS) {
+      const el = document.querySelector(sel);
+      if (!el) continue;
+      const t = extractText(el);
+      if (t.length > best.length) {
+        best = t;
+        bestSelector = sel;
+      }
+    }
+  }
+
+  // Body fallback: only if nothing else worked.
+  if (best.length < 400) {
     const bodyText = extractText(document.body);
     if (bodyText.length > best.length) {
       best = bodyText;
