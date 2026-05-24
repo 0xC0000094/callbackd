@@ -24,38 +24,55 @@ function pageScrape() {
     '[class*="jobdescription" i]',
     '[id*="job-description" i]',
     '[id*="jobDescription" i]',
+    '[class*="JobDetails" i]',
+    '[class*="job-details" i]',
+    '[class*="jobPosting" i]',
+    '[class*="posting" i]',
     '[class*="description" i]',
+    '[role="main"]',
     "main",
     "article",
   ];
 
-  function clone(el) {
+  function extractText(el) {
+    if (!el) return "";
     const c = el.cloneNode(true);
     c.querySelectorAll(
-      "script, style, nav, header, footer, noscript, svg, button, form",
+      "script, style, nav, header, footer, noscript, svg, iframe, button, form, [aria-hidden=\"true\"]",
     ).forEach((n) => n.remove());
-    return c;
-  }
-
-  function textOf(el) {
-    return clone(el).innerText.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+    // textContent is reliable on detached nodes; innerText is browser-dependent
+    return (c.textContent || "")
+      .replace(/\r/g, "")
+      .replace(/[ \t]+/g, " ")
+      .replace(/[ \t]*\n[ \t]*/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
   }
 
   let best = "";
+  let bestSelector = "";
   for (const sel of SELECTORS) {
     const el = document.querySelector(sel);
     if (!el) continue;
-    const t = textOf(el);
-    if (t.length > best.length) best = t;
-    if (best.length > 1500) break;
+    const t = extractText(el);
+    if (t.length > best.length) {
+      best = t;
+      bestSelector = sel;
+    }
+    if (best.length > 2000) break;
   }
-  if (best.length < 300) {
-    best = textOf(document.body);
+  if (best.length < 500) {
+    const bodyText = extractText(document.body);
+    if (bodyText.length > best.length) {
+      best = bodyText;
+      bestSelector = "body";
+    }
   }
 
+  const h1 = document.querySelector("h1");
   const titleMeta =
     document.querySelector('meta[property="og:title"]')?.content ||
-    document.querySelector("h1")?.innerText ||
+    (h1 && h1.textContent) ||
     document.title ||
     "";
   const companyMeta =
@@ -68,6 +85,7 @@ function pageScrape() {
     pageTitle: titleMeta.trim(),
     pageCompany: companyMeta.trim(),
     text: best,
+    selector: bestSelector,
   };
 }
 
@@ -106,7 +124,7 @@ async function readActiveTab() {
   }
 
   const text = (data.text || "").slice(0, MAX_TEXT_CHARS);
-  if (text.length < 200) {
+  if (text.length < 120) {
     setStatus(
       "Too little text on this page to analyze. Try a job posting page.",
       true,
@@ -122,7 +140,8 @@ async function readActiveTab() {
     text,
   };
   $preview.textContent = text.slice(0, 400) + (text.length > 400 ? "…" : "");
-  setStatus(`${text.length.toLocaleString()} characters captured. Ready.`);
+  const where = data.selector ? ` from ${data.selector}` : "";
+  setStatus(`${text.length.toLocaleString()} characters captured${where}.`);
   $analyze.disabled = false;
 }
 
