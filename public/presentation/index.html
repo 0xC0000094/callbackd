@@ -143,15 +143,15 @@
   .qr-wrap { background: #fff; padding: 10px; border-radius: 8px; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; }
   .qr-label { font-size: 11px; color: var(--dim); text-align: center; }
 
-  /* Slide 9: hero QR */
+  /* Slide 9: hero QR — override the global .slide > * width: 100% so the
+     white card hugs the QR canvas instead of stretching across the slide. */
   .qr-hero-wrap {
+    display: inline-block;
+    width: auto !important;
+    max-width: none !important;
     background: #fff;
-    padding: clamp(16px, 2vw, 28px);
-    border-radius: clamp(12px, 1.5vw, 22px);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
+    padding: clamp(14px, 1.5vw, 22px);
+    border-radius: clamp(10px, 1.2vw, 18px);
     line-height: 0;
     font-size: 0;
   }
