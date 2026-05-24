@@ -37,8 +37,11 @@ function pageScrape() {
   function extractText(el) {
     if (!el) return "";
     const c = el.cloneNode(true);
+    // Note: we deliberately do NOT strip <form>. ASP.NET-based job sites
+    // (e.g. Ontario Public Service Careers) wrap the entire page body in
+    // one form, so removing it would erase all content.
     c.querySelectorAll(
-      "script, style, nav, header, footer, noscript, svg, iframe, button, form, [aria-hidden=\"true\"]",
+      'script, style, nav, header, footer, noscript, svg, iframe, button, input[type="button"], input[type="submit"], [aria-hidden="true"]',
     ).forEach((n) => n.remove());
     // textContent is reliable on detached nodes; innerText is browser-dependent
     return (c.textContent || "")
