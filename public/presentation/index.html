@@ -412,13 +412,29 @@
         <section class="center">
           <div class="slide-card">
             <h2>Live demo</h2>
+            <canvas
+              id="qr-demo"
+              style="
+                margin: 16px auto 8px;
+                display: block;
+                border: 1px solid #e4e4e7;
+                border-radius: 12px;
+                padding: 12px;
+                background: white;
+              "
+            ></canvas>
             <a
-              class="demo-link"
-              href="https://callbackd.vercel.app"
+              href="https://callbackd.vercel.app/"
               target="_blank"
+              style="
+                font-size: 0.65em;
+                color: #18181b;
+                text-decoration: none;
+                font-weight: 600;
+              "
               >callbackd.vercel.app →</a
             >
-            <p class="small" style="margin-top: 24px">
+            <p class="small" style="margin-top: 16px">
               Three postings to show: a real careers page, a subtle ghost
               job, and an obvious scam.
             </p>
@@ -541,6 +557,28 @@
                 <span style="color: #71717a">linkedin.com/in/james--ventura</span>
               </a>
             </div>
+            <div
+              style="
+                margin-top: 24px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+              "
+            >
+              <canvas
+                id="qr-linkedin"
+                style="
+                  border: 1px solid #e4e4e7;
+                  border-radius: 8px;
+                  padding: 8px;
+                  background: white;
+                "
+              ></canvas>
+              <span style="font-size: 0.45em; color: #a1a1aa; letter-spacing: 0.05em; text-transform: uppercase;">
+                Scan to connect on LinkedIn
+              </span>
+            </div>
           </div>
         </section>
       </div>
@@ -549,6 +587,27 @@
     <a href="/" class="footer-back">← Back to app</a>
 
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+      function paintQR(id, url, size) {
+        const el = document.getElementById(id);
+        if (!el || typeof QRCode === "undefined") return;
+        QRCode.toCanvas(el, url, {
+          width: size,
+          margin: 1,
+          color: { dark: "#18181b", light: "#ffffff" },
+          errorCorrectionLevel: "M",
+        });
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        paintQR("qr-demo", "https://callbackd.vercel.app/", 220);
+        paintQR(
+          "qr-linkedin",
+          "https://www.linkedin.com/in/james--ventura/",
+          140,
+        );
+      });
+    </script>
     <script>
       Reveal.initialize({
         hash: true,
