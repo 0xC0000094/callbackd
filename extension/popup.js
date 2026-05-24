@@ -20,6 +20,112 @@ function setStatus(msg, isError) {
 function pageScrape() {
   // This function runs INSIDE the inspected page.
   //
+  // LinkedIn-specific fast path: LinkedIn embeds the active JobPosting as
+  // structured JSON in <code id="bpr-guid-*"> elements (their Voyager BPR
+  // payload). When we can find that, it's far cleaner than scraping the
+  // DOM, where the job-view page mixes the selected job with a "More jobs"
+  // recommendation feed in the same scaffold container.
+  function extractLinkedInJob() {
+    if (!/(^|\.)linkedin\.com$/i.test(location.hostname)) return null;
+
+    function getActiveJobId() {
+      const m = location.pathname.match(/\/jobs\/view\/(\d+)/);
+      if (m) return m[1];
+      const cur = new URLSearchParams(location.search).get("currentJobId");
+      return cur || null;
+    }
+
+    const activeJobId = getActiveJobId();
+    const codeBlocks = document.querySelectorAll('code[id^="bpr-guid-"]');
+
+    let bestPosting = null;
+    let bestPostingMatchesActive = false;
+    const companyByUrn = new Map();
+    const geoByUrn = new Map();
+    const employmentByUrn = new Map();
+
+    for (const code of codeBlocks) {
+      let parsed;
+      try {
+        parsed = JSON.parse(code.textContent || "");
+      } catch (e) {
+        continue;
+      }
+      const included = Array.isArray(parsed.included) ? parsed.included : [];
+      const candidates = [parsed.data, ...included].filter(Boolean);
+
+      for (const item of candidates) {
+        const t = item.$type || item["$type"];
+        if (!t) continue;
+        if (t === "com.linkedin.voyager.dash.jobs.JobPosting" && item.title && item.description) {
+          const urn = item.entityUrn || item.trackingUrn || "";
+          const matchesActive = !!activeJobId && urn.includes(activeJobId);
+          if (matchesActive) {
+            bestPosting = item;
+            bestPostingMatchesActive = true;
+          } else if (!bestPostingMatchesActive && !bestPosting) {
+            bestPosting = item;
+          }
+        } else if (t === "com.linkedin.voyager.dash.organization.Company" && item.entityUrn) {
+          companyByUrn.set(item.entityUrn, item);
+        } else if (t === "com.linkedin.voyager.dash.common.Geo" && item.entityUrn) {
+          geoByUrn.set(item.entityUrn, item);
+        } else if (t === "com.linkedin.voyager.dash.hiring.EmploymentStatus" && item.entityUrn) {
+          employmentByUrn.set(item.entityUrn, item);
+        }
+      }
+    }
+
+    if (!bestPosting) return null;
+
+    const title = bestPosting.title || "";
+    const description = (bestPosting.description && bestPosting.description.text) || "";
+    if (description.length < 200) return null;
+
+    const companyName =
+      (bestPosting.companyDetails && bestPosting.companyDetails.name) ||
+      (bestPosting.companyDetails &&
+        bestPosting.companyDetails.jobCompany &&
+        bestPosting.companyDetails.jobCompany.rawCompanyName) ||
+      "";
+    let locationName = "";
+    if (bestPosting.location && typeof bestPosting.location === "object") {
+      locationName =
+        bestPosting.location.defaultLocalizedName ||
+        bestPosting.location.abbreviatedLocalizedName ||
+        "";
+    } else if (typeof bestPosting.location === "string") {
+      const geo = geoByUrn.get(bestPosting.location);
+      locationName = (geo && (geo.defaultLocalizedName || geo.abbreviatedLocalizedName)) || "";
+    } else if (bestPosting["*location"]) {
+      const geo = geoByUrn.get(bestPosting["*location"]);
+      locationName = (geo && (geo.defaultLocalizedName || geo.abbreviatedLocalizedName)) || "";
+    }
+    let employmentType = "";
+    if (bestPosting.employmentStatus && typeof bestPosting.employmentStatus === "object") {
+      employmentType = bestPosting.employmentStatus.localizedName || "";
+    } else if (bestPosting["*employmentStatus"]) {
+      const e = employmentByUrn.get(bestPosting["*employmentStatus"]);
+      employmentType = (e && e.localizedName) || "";
+    }
+
+    const lines = [];
+    if (title) lines.push(`Job Title: ${title}`);
+    if (companyName) lines.push(`Company: ${companyName}`);
+    if (locationName) lines.push(`Location: ${locationName}`);
+    if (employmentType) lines.push(`Employment Type: ${employmentType}`);
+    lines.push("");
+    lines.push("Description:");
+    lines.push(description);
+
+    return {
+      text: lines.join("\n").trim(),
+      title,
+      company: companyName,
+      selector: "linkedin:bpr-json",
+    };
+  }
+
   // Strategy: try site-specific selectors first, ordered most-specific to
   // most-general. The first match that yields enough text wins — we do NOT
   // pick the longest match across all selectors, because pages like
@@ -78,6 +184,18 @@ function pageScrape() {
       .replace(/[ \t]*\n[ \t]*/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
       .trim();
+  }
+
+  // LinkedIn fast path — try the structured JSON before any DOM scraping.
+  const linkedInResult = extractLinkedInJob();
+  if (linkedInResult && linkedInResult.text.length >= 400) {
+    return {
+      url: location.href,
+      pageTitle: linkedInResult.title || document.title || "",
+      pageCompany: linkedInResult.company || "",
+      text: linkedInResult.text,
+      selector: linkedInResult.selector,
+    };
   }
 
   let best = "";
