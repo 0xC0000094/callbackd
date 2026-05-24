@@ -122,14 +122,24 @@
   .verdict-box.red .verdict-title { color: var(--red); }
   .verdict-desc { font-size: clamp(13px, 1.1vw, 17px); color: var(--muted); line-height: 1.6; }
 
-  .phase-row { display: flex; gap: 1rem; margin-top: 1.75rem; flex-wrap: wrap; }
-  .phase { flex: 1; min-width: 120px; }
-  .phase-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; margin-bottom: 10px; }
+  .phase-row { display: flex; gap: clamp(1rem, 2vw, 2rem); margin-top: 2rem; flex-wrap: wrap; }
+  .phase { flex: 1; min-width: 180px; }
+  .phase-dot {
+    width: clamp(48px, 4vw, 72px);
+    height: clamp(48px, 4vw, 72px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(18px, 1.6vw, 26px);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
   .p1 { background: rgba(29,158,117,0.15); color: var(--teal-light); }
   .p2 { background: rgba(127,119,221,0.15); color: var(--purple-light); }
   .p3 { background: rgba(239,159,39,0.15); color: var(--amber); }
   .p4 { background: rgba(55,138,221,0.15); color: var(--blue); }
-  .phase-label { font-size: clamp(13px, 1.1vw, 16px); color: var(--muted); line-height: 1.5; }
+  .phase-label { font-size: clamp(15px, 1.3vw, 22px); color: var(--muted); line-height: 1.5; }
 
   .big-line { font-size: clamp(24px, 3.5vw, 56px); font-weight: 500; line-height: 1.3; border-left: 3px solid var(--teal); padding-left: 1.75rem; margin: 1.5rem 0; max-width: 920px; }
 
