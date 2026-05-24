@@ -170,6 +170,16 @@
     color: var(--muted);
     margin-top: 1rem;
   }
+  .qr-hero-caption a, a.text-link {
+    color: var(--teal-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(93, 202, 165, 0.35);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .qr-hero-caption a:hover, a.text-link:hover {
+    color: #fff;
+    border-bottom-color: #fff;
+  }
   .demo-steps-row {
     display: flex;
     gap: 2rem;
@@ -382,8 +392,12 @@
   <!-- 09 Demo -->
   <div class="slide">
     <div class="slide-label">Live demo</div>
-    <div class="qr-hero-wrap" id="qr-demo"></div>
-    <div class="qr-hero-caption">callbackd.vercel.app</div>
+    <a href="https://callbackd.vercel.app" target="_blank" rel="noopener" style="display: inline-block; line-height: 0;">
+      <div class="qr-hero-wrap" id="qr-demo"></div>
+    </a>
+    <div class="qr-hero-caption">
+      <a href="https://callbackd.vercel.app" target="_blank" rel="noopener">callbackd.vercel.app</a>
+    </div>
     <div class="demo-steps-row">
       <div><strong>1. Real careers page</strong> &nbsp;Quick → Deep</div>
       <div><strong>2. Subtle ghost job</strong> &nbsp;rubric surfaces it</div>
@@ -452,10 +466,15 @@
     <div class="big-line accent-purple" style="border-color:var(--purple); margin: 1rem auto 2rem; max-width: 920px">
       The feedback loop the job market has never had.
     </div>
-    <div class="qr-hero-wrap" id="qr-linkedin" style="margin-top: 1rem"></div>
+    <a href="https://www.linkedin.com/in/james--ventura/" target="_blank" rel="noopener" style="display: inline-block; line-height: 0; margin-top: 1rem;">
+      <div class="qr-hero-wrap" id="qr-linkedin"></div>
+    </a>
     <div style="margin-top: 1.25rem">
-      <div style="font-size: clamp(18px, 1.6vw, 26px); color: var(--text); font-weight: 500">James Ventura</div>
+      <a href="https://www.linkedin.com/in/james--ventura/" target="_blank" rel="noopener" style="font-size: clamp(18px, 1.6vw, 26px); color: var(--text); font-weight: 500; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.2)">James Ventura</a>
       <div style="font-size: clamp(13px, 1vw, 16px); color: var(--muted); margin-top: 4px; letter-spacing: 0.04em">Connect on LinkedIn</div>
+    </div>
+    <div style="margin-top: 2rem; font-size: clamp(13px, 1.1vw, 17px); color: var(--dim)">
+      Try the app at <a href="https://callbackd.vercel.app" target="_blank" rel="noopener" class="text-link">callbackd.vercel.app</a>
     </div>
     <div class="slide-num">13 / 13</div>
   </div>
