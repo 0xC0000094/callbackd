@@ -175,7 +175,7 @@ function MainApp() {
         {step === "input" && (
           <div className="text-center mb-8 max-w-2xl mx-auto">
             <h1 className="text-3xl font-bold text-zinc-900 mb-2">
-              Is this job posting real?
+              Is this job legit?
             </h1>
             <p className="text-zinc-600">
               Paste a URL or the job text, then pick how thorough you want the
