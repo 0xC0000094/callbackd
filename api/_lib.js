@@ -38,7 +38,7 @@ export function assertAllowedOrigin(req, res) {
 //
 // Keep in sync with src/launchGate.js. Both must hold the same ISO timestamp
 // or the splash and the API will disagree about when the app is live.
-export const LAUNCH_AT_ISO = "2026-05-25T11:59:00-05:00";
+export const LAUNCH_AT_ISO = "2026-05-24T23:59:00-05:00";
 export const LAUNCH_AT_MS = new Date(LAUNCH_AT_ISO).getTime();
 
 export function assertLaunched(res) {
