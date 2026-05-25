@@ -106,6 +106,37 @@ const FINDING_STYLES = {
   },
 };
 
+const CHECK_GROUP_ORDER = [
+  "Identity & authorship",
+  "Posting provenance",
+  "Compensation reality",
+  "Company viability",
+];
+
+const CHECK_STATUS_STYLES = {
+  clear: { dot: "bg-emerald-500", label: "Clear", text: "text-emerald-700" },
+  flag: { dot: "bg-rose-500", label: "Flag", text: "text-rose-700" },
+  inconclusive: {
+    dot: "bg-amber-500",
+    label: "Inconclusive",
+    text: "text-amber-700",
+  },
+  skipped: { dot: "bg-zinc-300", label: "Not checked", text: "text-zinc-400" },
+};
+
+function groupChecks(checks) {
+  const byGroup = {};
+  for (const c of checks) {
+    const g = c?.group || "Other";
+    (byGroup[g] = byGroup[g] || []).push(c);
+  }
+  const order = [
+    ...CHECK_GROUP_ORDER.filter((g) => byGroup[g]),
+    ...Object.keys(byGroup).filter((g) => !CHECK_GROUP_ORDER.includes(g)),
+  ];
+  return { byGroup, order };
+}
+
 function hostFromUrl(url) {
   try {
     return new URL(url).hostname.replace(/^www\./, "");
@@ -182,7 +213,9 @@ export default function Results({ result, job, onReset }) {
   const findings = Array.isArray(result.key_findings) ? result.key_findings : [];
   const sources = Array.isArray(result.sources) ? result.sources : [];
   const queries = Array.isArray(result.queries) ? result.queries : [];
+  const checks = Array.isArray(result.checks) ? result.checks : [];
   const isDeep = result.mode === "deep_research";
+  const { byGroup: checksByGroup, order: checkGroups } = groupChecks(checks);
 
   return (
     <div className="w-full max-w-3xl mx-auto">
@@ -324,63 +357,258 @@ export default function Results({ result, job, onReset }) {
         </div>
       )}
 
-      {isDeep && (queries.length > 0 || sources.length > 0) && (
-        <div className="mb-8 p-5 bg-zinc-50 border border-zinc-200 rounded-xl">
+      {isDeep && checks.length > 0 && (
+        <div className="mb-8">
           <div className="text-xs uppercase tracking-wider text-zinc-500 mb-3">
-            Research trail
+            Proof of work
+            <span className="text-zinc-400 normal-case font-normal ml-2">
+              what our research pass checked for this posting
+            </span>
           </div>
-
-          {queries.length > 0 && (
-            <div className="mb-4">
-              <div className="text-xs font-semibold text-zinc-700 mb-2">
-                Searches performed
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {checkGroups.map((group) => (
+              <div
+                key={group}
+                className="bg-white border border-zinc-200 rounded-lg p-4"
+              >
+                <div className="text-xs font-semibold text-zinc-700 mb-3">
+                  {group}
+                </div>
+                <ul className="space-y-3">
+                  {checksByGroup[group].map((c, i) => {
+                    const st =
+                      CHECK_STATUS_STYLES[c?.status] ||
+                      CHECK_STATUS_STYLES.skipped;
+                    return (
+                      <li key={i} className="text-sm">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`flex-shrink-0 w-1.5 h-1.5 rounded-full ${st.dot}`}
+                          ></span>
+                          <span className="font-medium text-zinc-800">
+                            {c?.signal}
+                          </span>
+                          <span
+                            className={`ml-auto text-[10px] uppercase tracking-wide ${st.text}`}
+                          >
+                            {st.label}
+                          </span>
+                        </div>
+                        {c?.detail && (
+                          <p className="text-xs text-zinc-500 leading-snug mt-1 pl-3.5">
+                            {c.detail}
+                          </p>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {queries.map((q, i) => (
-                  <span
-                    key={i}
-                    className="text-xs px-2.5 py-1 bg-white border border-zinc-200 rounded-full text-zinc-700 font-mono"
-                  >
-                    {q}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {sources.length > 0 && (
-            <div>
-              <div className="text-xs font-semibold text-zinc-700 mb-2">
-                Sources consulted ({sources.length})
-              </div>
-              <ul className="space-y-1">
-                {sources.map((s, i) => {
-                  const href = safeHref(s.url);
-                  return (
-                    <li key={i} className="text-sm">
-                      {href ? (
-                        <a
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-zinc-900 hover:underline"
-                        >
-                          {s.title}
-                        </a>
-                      ) : (
-                        <span className="text-zinc-900">{s.title}</span>
-                      )}
-                      <span className="text-xs text-zinc-500 ml-2">
-                        {hostFromUrl(s.url)}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       )}
+
+      {isDeep && (queries.length > 0 || sources.length > 0) && (() => {
+        const trail = Array.isArray(result.research_trail) ? result.research_trail : [];
+        const sourceByUrl = new Map(sources.map((s) => [s.url, s]));
+        const groups = trail
+          .filter((t) => t && t.topic && (t.summary || (t.queries || []).length || (t.sources || []).length))
+          .map((t) => ({
+            topic: t.topic,
+            summary: t.summary || "",
+            queries: Array.isArray(t.queries) ? t.queries.filter(Boolean) : [],
+            sources: Array.isArray(t.sources)
+              ? t.sources
+                  .map((u) => sourceByUrl.get(u) || { url: u, title: u })
+                  .filter((s) => s && s.url)
+              : [],
+          }));
+
+        const groupedQueryUrls = new Set();
+        const groupedSourceUrls = new Set();
+        groups.forEach((g) => {
+          g.queries.forEach((q) => groupedQueryUrls.add(q));
+          g.sources.forEach((s) => groupedSourceUrls.add(s.url));
+        });
+        const ungroupedQueries = queries.filter((q) => !groupedQueryUrls.has(q));
+        const ungroupedSources = sources.filter((s) => !groupedSourceUrls.has(s.url));
+        const hasGroups = groups.length > 0;
+
+        return (
+          <div className="mb-8 p-5 bg-zinc-50 border border-zinc-200 rounded-xl">
+            <div className="text-xs uppercase tracking-wider text-zinc-500 mb-4">
+              Research trail
+            </div>
+
+            {hasGroups ? (
+              <div className="space-y-3">
+                {groups.map((g, i) => (
+                  <div
+                    key={i}
+                    className="p-4 bg-white border border-zinc-200 rounded-lg"
+                  >
+                    <div className="text-sm font-semibold text-zinc-900 mb-1">
+                      {g.topic}
+                    </div>
+                    {g.summary && (
+                      <div className="text-sm text-zinc-700 leading-relaxed mb-3">
+                        {g.summary}
+                      </div>
+                    )}
+                    {g.queries.length > 0 && (
+                      <div className="mb-3">
+                        <div className="text-[11px] uppercase tracking-wider text-zinc-500 mb-1.5">
+                          Searches
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {g.queries.map((q, j) => (
+                            <span
+                              key={j}
+                              className="text-xs px-2.5 py-1 bg-zinc-50 border border-zinc-200 rounded-full text-zinc-700 font-mono"
+                            >
+                              {q}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {g.sources.length > 0 && (
+                      <div>
+                        <div className="text-[11px] uppercase tracking-wider text-zinc-500 mb-1.5">
+                          Sources
+                        </div>
+                        <ul className="space-y-1">
+                          {g.sources.map((s, j) => {
+                            const href = safeHref(s.url);
+                            return (
+                              <li key={j} className="text-sm">
+                                {href ? (
+                                  <a
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-zinc-900 hover:underline"
+                                  >
+                                    {s.title}
+                                  </a>
+                                ) : (
+                                  <span className="text-zinc-900">{s.title}</span>
+                                )}
+                                <span className="text-xs text-zinc-500 ml-2">
+                                  {hostFromUrl(s.url)}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {(ungroupedQueries.length > 0 || ungroupedSources.length > 0) && (
+                  <div className="p-4 bg-white border border-zinc-200 rounded-lg">
+                    <div className="text-sm font-semibold text-zinc-900 mb-3">
+                      Other searches
+                    </div>
+                    {ungroupedQueries.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {ungroupedQueries.map((q, j) => (
+                          <span
+                            key={j}
+                            className="text-xs px-2.5 py-1 bg-zinc-50 border border-zinc-200 rounded-full text-zinc-700 font-mono"
+                          >
+                            {q}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {ungroupedSources.length > 0 && (
+                      <ul className="space-y-1">
+                        {ungroupedSources.map((s, j) => {
+                          const href = safeHref(s.url);
+                          return (
+                            <li key={j} className="text-sm">
+                              {href ? (
+                                <a
+                                  href={href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-zinc-900 hover:underline"
+                                >
+                                  {s.title}
+                                </a>
+                              ) : (
+                                <span className="text-zinc-900">{s.title}</span>
+                              )}
+                              <span className="text-xs text-zinc-500 ml-2">
+                                {hostFromUrl(s.url)}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                {queries.length > 0 && (
+                  <div className="mb-4">
+                    <div className="text-xs font-semibold text-zinc-700 mb-2">
+                      Searches performed
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {queries.map((q, i) => (
+                        <span
+                          key={i}
+                          className="text-xs px-2.5 py-1 bg-white border border-zinc-200 rounded-full text-zinc-700 font-mono"
+                        >
+                          {q}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {sources.length > 0 && (
+                  <div>
+                    <div className="text-xs font-semibold text-zinc-700 mb-2">
+                      Sources consulted ({sources.length})
+                    </div>
+                    <ul className="space-y-1">
+                      {sources.map((s, i) => {
+                        const href = safeHref(s.url);
+                        return (
+                          <li key={i} className="text-sm">
+                            {href ? (
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-zinc-900 hover:underline"
+                              >
+                                {s.title}
+                              </a>
+                            ) : (
+                              <span className="text-zinc-900">{s.title}</span>
+                            )}
+                            <span className="text-xs text-zinc-500 ml-2">
+                              {hostFromUrl(s.url)}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       <div className="mb-8">
         <div className="text-xs uppercase tracking-wider text-zinc-500 mb-2">
