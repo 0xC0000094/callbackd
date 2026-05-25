@@ -1,13 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import JobInput from "./components/JobInput.jsx";
 import LoadingState from "./components/LoadingState.jsx";
 import Results from "./components/Results.jsx";
 import ComingSoon from "./components/ComingSoon.jsx";
-import { isLaunched } from "./launchGate.js";
 
 export default function App() {
-  if (!isLaunched()) {
-    return <ComingSoon />;
+  // Server-authoritative gate. We ignore the local clock entirely — a
+  // visitor who fast-forwards their PC clock still gets locked out of
+  // the analyzer UI, not just the API.
+  // null = checking, false = gated, true = live
+  const [launched, setLaunched] = useState(null);
+  const [serverInfo, setServerInfo] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function check() {
+      try {
+        const r = await fetch("/api/launchStatus", { cache: "no-store" });
+        const data = await r.json();
+        if (cancelled) return;
+        setServerInfo(data);
+        setLaunched(!!data.launched);
+      } catch {
+        // Server unreachable — fail closed. Splash stays up.
+        if (!cancelled) setLaunched(false);
+      }
+    }
+    check();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!launched) {
+    return <ComingSoon serverInfo={serverInfo} />;
   }
   return <MainApp />;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LAUNCH_AT_MS } from "../launchGate.js";
 
 function pad(n) {
@@ -15,25 +15,53 @@ function formatRemaining(ms) {
   return { d, h, m, s };
 }
 
-export default function ComingSoon() {
-  const [now, setNow] = useState(() => Date.now());
+// serverInfo: { launched, launchAt, serverNow } from /api/launchStatus, or
+// null while the fetch is in flight or has failed. We anchor the countdown
+// to the server's clock at mount, then advance it using performance.now()
+// which is monotonic — fiddling with the OS clock can't speed it up.
+export default function ComingSoon({ serverInfo }) {
+  const anchorRef = useRef(null);
+  const [, force] = useState(0);
 
   useEffect(() => {
+    if (serverInfo && !anchorRef.current) {
+      anchorRef.current = {
+        perfStart: performance.now(),
+        serverStart: new Date(serverInfo.serverNow).getTime(),
+        launchMs: serverInfo.launchAt
+          ? new Date(serverInfo.launchAt).getTime()
+          : LAUNCH_AT_MS,
+      };
+      force((n) => n + 1);
+    }
+  }, [serverInfo]);
+
+  useEffect(() => {
+    if (!anchorRef.current) return;
     const id = setInterval(() => {
-      const t = Date.now();
-      setNow(t);
-      if (t >= LAUNCH_AT_MS) {
+      const a = anchorRef.current;
+      const serverNow = a.serverStart + (performance.now() - a.perfStart);
+      if (serverNow >= a.launchMs) {
         clearInterval(id);
         window.location.reload();
+        return;
       }
+      force((n) => n + 1);
     }, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [anchorRef.current]);
 
-  const remaining = LAUNCH_AT_MS - now;
+  const checking = !anchorRef.current;
+  let remaining = 0;
+  let launchDateForDisplay = new Date(LAUNCH_AT_MS);
+  if (anchorRef.current) {
+    const a = anchorRef.current;
+    const serverNow = a.serverStart + (performance.now() - a.perfStart);
+    remaining = a.launchMs - serverNow;
+    launchDateForDisplay = new Date(a.launchMs);
+  }
   const { d, h, m, s } = formatRemaining(remaining);
-  const launchDate = new Date(LAUNCH_AT_MS);
-  const launchStr = launchDate.toLocaleString(undefined, {
+  const launchStr = launchDateForDisplay.toLocaleString(undefined, {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -61,16 +89,25 @@ export default function ComingSoon() {
         </div>
 
         <div className="text-xs uppercase tracking-[0.18em] text-zinc-500 mb-4">
-          Live in
+          {checking ? "Checking" : "Live in"}
         </div>
-        <div className="flex justify-center gap-4 sm:gap-6 mb-10 font-mono">
-          {d > 0 && (
-            <TimeBlock value={d} label={d === 1 ? "day" : "days"} />
-          )}
-          <TimeBlock value={pad(h)} label="hr" />
-          <TimeBlock value={pad(m)} label="min" />
-          <TimeBlock value={pad(s)} label="sec" />
-        </div>
+
+        {checking ? (
+          <div className="flex justify-center items-center gap-2 mb-10 text-zinc-400">
+            <span className="inline-block w-2 h-2 rounded-full bg-zinc-300 animate-pulse"></span>
+            <span className="inline-block w-2 h-2 rounded-full bg-zinc-300 animate-pulse [animation-delay:120ms]"></span>
+            <span className="inline-block w-2 h-2 rounded-full bg-zinc-300 animate-pulse [animation-delay:240ms]"></span>
+          </div>
+        ) : (
+          <div className="flex justify-center gap-4 sm:gap-6 mb-10 font-mono">
+            {d > 0 && (
+              <TimeBlock value={d} label={d === 1 ? "day" : "days"} />
+            )}
+            <TimeBlock value={pad(h)} label="hr" />
+            <TimeBlock value={pad(m)} label="min" />
+            <TimeBlock value={pad(s)} label="sec" />
+          </div>
+        )}
 
         <div className="text-xs text-zinc-500">{launchStr}</div>
       </div>
