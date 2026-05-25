@@ -12,7 +12,7 @@ Paste a job posting URL or the raw text. Pick a mode. Get a scored report.
 
 **Quick Check.** LLM inference over the posting text. Returns a verdict, a work arrangement classification, four to seven key findings, and at-a-glance category scores. A few seconds.
 
-**Deep Research.** Same output as Quick Check plus agentic web search. The model looks up the company, checks size claims, and sanity-checks role coherence against comparable postings. Adds per-category evidence and a full research trail (the search queries used and the sources consulted). 30 to 60 seconds.
+**Deep Research.** Same output as Quick Check plus an agentic tool-use loop. Alongside web search, the model calls real verification tools — domain registration records (RDAP/WHOIS), Internet Archive first-seen dates, and live HTTP headers — to check the posting's claims against ground truth. Adds per-category evidence, a research trail (the queries used and sources consulted), and a sixteen-point verification checklist grouped into identity, provenance, compensation, and viability, each marked clear, flag, or inconclusive. Around 100 seconds.
 
 ## Rubric
 
@@ -39,8 +39,9 @@ The report classifies the role as Remote, Hybrid, In-person, or Unclear. A short
 * React, Vite, Tailwind CSS
 * Vercel serverless functions (Node.js)
 * Anthropic Claude Sonnet 4.6 via the official SDK
-* Anthropic `web_search_20250305` tool for Deep Research
-* Axios and Cheerio for URL scraping
+* Anthropic `web_search_20250305` plus custom tool use (RDAP/WHOIS, Internet Archive, HTTP headers) in an agentic loop for Deep Research
+* Axios and Cheerio for URL scraping, behind an SSRF guard that blocks internal and cloud-metadata hosts
+* Prompt-injection hardening: untrusted posting text is delimited and treated as data, and injection attempts are scored as a red flag
 * Server-Sent Events for live progress updates
 
 ## Run locally
