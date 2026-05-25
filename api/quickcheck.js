@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import {
   assertAllowedOrigin,
+  assertLaunched,
   wrapUntrusted,
   sanitizeUntrusted,
   INJECTION_GUARD,
@@ -94,6 +95,7 @@ export default async function handler(req, res) {
   }
 
   if (!assertAllowedOrigin(req, res)) return;
+  if (!assertLaunched(res)) return;
 
   const { jobDescription, company, title } = req.body || {};
   if (!jobDescription || typeof jobDescription !== "string") {

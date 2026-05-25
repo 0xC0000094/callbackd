@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { assertAllowedOrigin, safeFetch } from "./_lib.js";
+import { assertAllowedOrigin, assertLaunched, safeFetch } from "./_lib.js";
 
 const BLOCKED_DOMAINS = [
   "linkedin.com",
@@ -81,6 +81,7 @@ export default async function handler(req, res) {
   }
 
   if (!assertAllowedOrigin(req, res)) return;
+  if (!assertLaunched(res)) return;
 
   const { url } = req.body || {};
   if (!url || typeof url !== "string") {
