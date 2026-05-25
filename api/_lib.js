@@ -34,6 +34,22 @@ export function assertAllowedOrigin(req, res) {
   return false;
 }
 
+// --- Launch gate ----------------------------------------------------------
+//
+// Keep in sync with src/launchGate.js. Both must hold the same ISO timestamp
+// or the splash and the API will disagree about when the app is live.
+export const LAUNCH_AT_ISO = "2026-05-25T11:59:00-05:00";
+export const LAUNCH_AT_MS = new Date(LAUNCH_AT_ISO).getTime();
+
+export function assertLaunched(res) {
+  if (Date.now() >= LAUNCH_AT_MS) return true;
+  res.status(503).json({
+    error: "Not yet live",
+    launchAt: LAUNCH_AT_ISO,
+  });
+  return false;
+}
+
 // --- Prompt-injection hardening -------------------------------------------
 
 export const MAX_JOB_DESCRIPTION_CHARS = 20000;

@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import axios from "axios";
 import {
   assertAllowedOrigin,
+  assertLaunched,
   wrapUntrusted,
   sanitizeUntrusted,
   safeFetch,
@@ -341,6 +342,7 @@ export default async function handler(req, res) {
   }
 
   if (!assertAllowedOrigin(req, res)) return;
+  if (!assertLaunched(res)) return;
 
   const { jobDescription, company, title } = req.body || {};
   if (!jobDescription || typeof jobDescription !== "string") {

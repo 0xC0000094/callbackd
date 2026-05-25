@@ -2,8 +2,17 @@ import { useState } from "react";
 import JobInput from "./components/JobInput.jsx";
 import LoadingState from "./components/LoadingState.jsx";
 import Results from "./components/Results.jsx";
+import ComingSoon from "./components/ComingSoon.jsx";
+import { isLaunched } from "./launchGate.js";
 
 export default function App() {
+  if (!isLaunched()) {
+    return <ComingSoon />;
+  }
+  return <MainApp />;
+}
+
+function MainApp() {
   const [step, setStep] = useState("input");
   const [job, setJob] = useState(null);
   const [mode, setMode] = useState(null);
