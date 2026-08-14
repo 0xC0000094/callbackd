@@ -44,7 +44,7 @@ Phase 3 adds community. Verified applicant submissions where candidates report w
 
 Phase 4 is the flywheel. More candidates, better data, better recommendations. You can copy the product. You cannot copy the data.
 
-Ontario recognized this problem legislatively. As of January 1 2026, employers with 25 or more employees must disclose vacancy status and whether AI is used in screening. The community layer is what makes that verifiable in practice, not just on paper.
+Ontario recognized this problem legislatively. From January 1 2026, employers with 25 or more employees must disclose whether a posting is for an existing vacancy, under s. 8.5 of the Employment Standards Act added by Bill 190, and must disclose any use of AI in screening, under s. 8.4 added by Bill 149. The community layer is what makes that verifiable in practice, not just on paper.
 
 ---
 
@@ -90,4 +90,4 @@ Employment Hero. (2026). Ghost jobs survey, nationally representative, n=1,000+ 
 
 Greenhouse Software. (2024). State of Job Hunting Report.
 
-Ontario Ministry of Labour. (2025). Working for Workers Four Act, Bill 149.
+Ontario Ministry of Labour. Working for Workers Four Act, 2024 (Bill 149), s. 8.4, AI screening disclosure; Working for Workers Five Act, 2024 (Bill 190), s. 8.5, existing-vacancy disclosure. Both in force January 1, 2026.
