@@ -10,3 +10,6 @@ dist
 # personal, never push
 documentation/PERSONAL.md
 
+logs/*
+!logs/README.md
+node_modules/
